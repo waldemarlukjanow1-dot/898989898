@@ -403,11 +403,11 @@ def scene_photo(cv, t):
     head(cv, 400, 650, 88, "focus", beanie=(40, 40, 44))
     cv.ellipse((515, 650, 605, 720), C["white"], C["ink"], 4)
     cv.circle(558, 685, 72, C["red"] + (0,), C["red"], 6)
-    cv.text((260, 1010), "03:13 Uhr", font(40, "Bold"), C["ink"])
-    cv.poly([(470, 1000), (900, 975), (915, 1150), (485, 1175)], (250, 238, 160), C["ink"], 5)
-    cv.text((505, 1020), "Danke für die", font(40, "Bold"), C["ink"])
-    cv.text((505, 1070), "Fingerabdrücke.", font(40, "Bold"), C["ink"])
-    cv.text((790, 1115), "– O.", font(44, "Black"), C["red"])
+    cv.text((235, 460), "REC 03:13", mono(30), C["red"])
+    cv.poly([(400, 1000), (830, 975), (845, 1150), (415, 1175)], (250, 238, 160), C["ink"], 5)
+    cv.text((435, 1020), "Danke für die", font(40, "Bold"), C["ink"])
+    cv.text((435, 1070), "Fingerabdrücke.", font(40, "Bold"), C["ink"])
+    cv.text((720, 1115), "– O.", font(44, "Black"), C["red"])
 
 
 def scene_alarm(cv, t):
@@ -467,10 +467,10 @@ def scene_final(cv, t):
     cv.rect((0, 1300, W, H), (26, 34, 38))
     for i in range(3):
         cv.ellipse((100 + i * 320, 1420 + i * 40, 320 + i * 320, 1450 + i * 40), (90, 110, 160, 90))
-    head(cv, 360, 950, 120, "focus", beanie=(40, 40, 44))
-    body(cv, 360, 950, 120, C["jacket"], bag=C["ink"])
-    head(cv, 720, 1000, 105, "neutral", hair=C["ink"], look=-18)
-    body(cv, 720, 1000, 105, C["mira"], bag=C["brown"])
+    head(cv, 360, 780, 120, "focus", beanie=(40, 40, 44))
+    body(cv, 360, 780, 120, C["jacket"], bag=C["ink"])
+    head(cv, 720, 830, 105, "neutral", hair=C["ink"], look=-18)
+    body(cv, 720, 830, 105, C["mira"], bag=C["brown"])
     # choice buttons
     cv.rect((110, 1290, 470, 1390), C["white"], C["ink"], 5, r=24)
     cv.text((290, 1357), "RENNEN", font(52), C["ink"], "ms")
@@ -485,14 +485,14 @@ SCENES = [scene_bank, scene_crew, scene_hack, scene_vault_crack, scene_vault_ope
 
 # ---------------------------------------------------------------- overlays
 
-def hud(img, beute, crew, hitze, alarm):
+def hud(img, beute, crew, hitze, alarm, alarm_col=None, crew_col=None):
     """Game-style stat chips (top-left, below TikTok's top tabs)."""
     d = ImageDraw.Draw(img, "RGBA")
     y = 250
     chips = [("BEUTE", f"€{beute:,}".replace(",", "."), C["white"]),
-             ("CREW", str(crew), C["white"]),
+             ("CREW", str(crew), crew_col or C["white"]),
              ("HITZE", f"{hitze} %", C["pink"]),
-             ("ALARM", alarm, C["gold"])]
+             ("ALARM", alarm, alarm_col or C["gold"])]
     x = 50
     fl = font(17, "Bold")
     fv = font(46, "Black")
@@ -505,8 +505,10 @@ def hud(img, beute, crew, hitze, alarm):
     return img
 
 
-def caption(img, words, hi=(), y=1210):
-    """Big centered caption; words whose index is in `hi` turn pink."""
+def caption(img, words, hi=(), y=1210, visible=None):
+    """Big centered caption; words whose index is in `hi` turn pink.
+    `visible` = number of words already spoken (layout stays fixed)."""
+    visible = len(words) if visible is None else visible
     d = ImageDraw.Draw(img, "RGBA")
     f = font(72, "Black")
     space = d.textlength(" ", font=f)
@@ -515,6 +517,8 @@ def caption(img, words, hi=(), y=1210):
     cx = 500  # shifted left of centre so TikTok's right-hand buttons never overlap
     x = cx - total / 2
     for i, w_ in enumerate(words):
+        if i >= visible:
+            break
         col = C["pink"] if i in hi else C["white"]
         d.text((x, y), w_, font=f, fill=col, anchor="ls", stroke_width=6, stroke_fill=(10, 14, 14))
         x += widths[i] + space
