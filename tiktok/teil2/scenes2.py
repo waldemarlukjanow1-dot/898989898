@@ -230,7 +230,7 @@ def s_badge(cv, t):
     cv.line([(540, 200), (540, 560)], (10, 10, 10), 6)
     cv.poly([(440, 560), (640, 560), (600, 620), (480, 620)], (40, 40, 40))
     drop = max(0, 1 - t * 4) * -250
-    cx, cy = 540, 960 + drop
+    cx, cy = 540, 830 + drop
     star = [(cx + 150 * math.cos(math.radians(a)) * (1 if k % 2 == 0 else 0.5),
              cy - 40 + 150 * math.sin(math.radians(a)) * (1 if k % 2 == 0 else 0.5))
             for k, a in enumerate(range(-90, 270, 36))]
