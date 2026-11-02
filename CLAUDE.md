@@ -14,11 +14,24 @@ gesichtslose Figuren mit runden weißen Köpfen. Vorlage und Code: `tiktok/bankr
 Oben 220 px, rechts 150 px, unten 420 px frei. Untertitel bei y≈1210, Mitte x=500, max. 760 px breit.
 
 ## Stil-Wünsche des Nutzers (ab Video 2)
-- **Deutlich düsterer** als Video 1: dunklere, entsättigte Farben, starke Vignette, Filmkorn,
-  flackerndes Licht, harte Schatten, Rot nur als Akzentfarbe, mehr Silhouetten und Leere im Bild,
-  tiefer Sub-Bass, Stille als Spannungsmittel.
-- **Interessanter gestaltet:** mehr Kamerabewegung, Detail-Inserts, Szenen, die sich nachträglich
-  anders lesen, versteckte Hinweise im Hintergrund (Rewatch-Wert).
+- **Düstere Stimmung**, aber über Farben und Hintergrund (dunkle Räume, Rot als Akzent,
+  tiefer Sub-Bass, Stille als Spannungsmittel) – NICHT über unleserliches Bild.
+
+### Verständlichkeit hat Vorrang (Feedback nach Video 3 „Der Zeuge“)
+Der Nutzer hat bei „Der Zeuge“ nicht verstanden, worum es geht. Deshalb ab sofort:
+- **Kein Flackern**, kein Filmkorn, keine Dauer-Glitches, keine Wackelkamera.
+  Glitch nur einmal kurz bei der PAUSE.
+- **Simpel und deutlich animieren:** ruhiger, sanfter Zoom; Figuren/Objekte gleiten oder poppen
+  klar ins Bild; eine Bewegung pro Szene, die man sofort versteht.
+- **Was gesagt wird, sieht man:** Jede Szene zeigt genau EINE klare Sache, die zum Satz passt.
+- **Hauptmotiv immer hell und kontrastreich** beleuchtet, groß im Bild; keine Silhouetten für
+  wichtige Figuren, keine fast-schwarzen Szenen.
+- **Figuren eindeutig:** feste Farben/Merkmale pro Figur, Namens-Schild beim ersten Auftritt.
+- **Rückblenden klar markiert** (z. B. Sepia-Ton + Label „RÜCKBLENDE“), aber scharf und lesbar.
+- **Schlüsselinfos als Text-Insert** (z. B. „MANTEL: GRAU“ → „MANTEL: SCHWARZ“), damit Twists
+  auch ohne Ton verständlich sind.
+- Versteckte Hinweise dürfen bleiben, aber nur zusätzlich – die Haupthandlung muss beim ersten
+  Ansehen klar sein.
 - **Jederzeit ist ein Plottwist möglich:** jede Figur wirkt verdächtig, kleine Twists ca. alle
   15 Sekunden, falsche Fährten, ein Finale, das den Anfang umdeutet; Ende möglichst als Loop
   zum ersten Satz. Ein HUD-Wert wie „VERTRAUEN“ oder „MISSTRAUEN“ zeigt die Unsicherheit.
