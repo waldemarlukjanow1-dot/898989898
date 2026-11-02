@@ -22,7 +22,9 @@ Oben 220 px, rechts 150 px, unten 420 px frei. Untertitel bei y≈1210, Mitte x=
 - **Jederzeit ist ein Plottwist möglich:** jede Figur wirkt verdächtig, kleine Twists ca. alle
   15 Sekunden, falsche Fährten, ein Finale, das den Anfang umdeutet; Ende möglichst als Loop
   zum ersten Satz. Ein HUD-Wert wie „VERTRAUEN“ oder „MISSTRAUEN“ zeigt die Unsicherheit.
-- Ende immer mit Frage an die Zuschauer (Kommentare entscheiden Teil 2).
+- **Die ersten Sekunden** sagen sofort, worum es geht, und müssen sehr aufregend sein (z. B. 1-Frame-Schock + Prämisse im ersten Satz).
+- Ende immer mit Cliffhanger + Frage an die Zuschauer (Kommentare entscheiden Teil 2).
+- Videos wegen Größe mit ~9 Mbit/s ausgeben (Filmkorn bläht sonst auf >300 MB).
 
 ## Kanal
 - Name: **Du-Geschichten 🎭** (@du.geschichten), Profilbild: `tiktok/profilbild/profilbild_B_pink.png`
