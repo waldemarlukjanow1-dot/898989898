@@ -30,6 +30,11 @@ Der Nutzer hat bei „Der Zeuge“ nicht verstanden, worum es geht. Deshalb ab s
 - **Rückblenden klar markiert** (z. B. Sepia-Ton + Label „RÜCKBLENDE“), aber scharf und lesbar.
 - **Schlüsselinfos als Text-Insert** (z. B. „MANTEL: GRAU“ → „MANTEL: SCHWARZ“), damit Twists
   auch ohne Ton verständlich sind.
+- **Orte und Gebäude klar erkennbar:** Häuser mit Dach, Fenstern, Tür, Schild (z. B. „BANK“,
+  „POLIZEI“), Straße/Bürgersteig; Innenräume mit typischen Möbeln, damit man sofort weiß, wo man ist.
+- **Figuren bewegen sich richtig:** Laufen mit schwingenden Armen und Beinen (Gehzyklus),
+  Kopf dreht sich, Hände greifen, Mund bewegt sich beim Sprechen, Blinzeln; Figuren gehen
+  von A nach B statt nur still dazustehen oder zu wackeln. Gliedmaßen als Gelenk-Rig zeichnen.
 - Versteckte Hinweise dürfen bleiben, aber nur zusätzlich – die Haupthandlung muss beim ersten
   Ansehen klar sein.
 - **Jederzeit ist ein Plottwist möglich:** jede Figur wirkt verdächtig, kleine Twists ca. alle
