@@ -211,7 +211,7 @@ def s_attack(cv, t):
     street(cv)
     truck(cv, -120, 1300, 0.95)
     lying_guard(cv, 380, 1480)
-    lying_guard(cv, 700, 1600, nod=abs(math.sin(seg(t, 0.55, 1.0) * math.pi * 2)) if t > 0.55 else 0)
+    lying_guard(cv, 700, 1600, nod=abs(math.sin(seg(t, 0.8, 1.0) * math.pi * 2)) if t > 0.8 else 0)
     x = 960 - 380 * ease(t / 0.5)
     pose = rig.run(t * 3) if t < 0.5 else rig.stand(t)
     figure(cv, x, 1430, 50, DU_MASK, pose, facing=-1)
@@ -299,7 +299,7 @@ def s_four(cv, t):
     who = [("DU", Look(jacket=C["red_j"], hair=(40, 30, 26))), ("LEON", Look(jacket=C["green_j"], hat=(40, 100, 60))),
            ("KOMPLIZE 1", Look(jacket=C["grey_h"], hair=(80, 60, 40))), ("KOMPLIZE 2", Look(jacket=C["grey_h"], hair=(30, 30, 30)))]
     for k, (n, lk) in enumerate(who):
-        x = 170 + (k % 2) * 380
+        x = 300 + (k % 2) * 400
         y = 640 + (k // 2) * 420
         cv.rect((x - 150, y - 180, x + 150, y + 220), (50, 56, 66), WHITE, 4, r=20)
         cv.rect((x - 90, y + 80, x + 90, y + 220), lk.jacket)
@@ -316,7 +316,7 @@ def s_tracker(cv, t):
     for k in range(5):
         S.cash_stack(cv, 220 + k * 130, 880, 120, 50)
         S.cash_stack(cv, 230 + k * 130, 950, 120, 50)
-    k = ease(seg(t, 0.2, 0.6))
+    k = ease(seg(t, 0.35, 0.7))
     if k > 0.3:  # money lifted -> tracker visible
         cv.rect((420, 1080, 660, 1220), (30, 30, 34), INK, 5, r=16)
         cv.rect((450, 1110, 600, 1140), (60, 200, 90))
@@ -373,20 +373,19 @@ def s_carry(cv, t):
 
 def s_wanted(cv, t):
     cv.img.paste((30, 34, 42), (0, 0) + cv.img.size)
-    cv.rect((90, 380, 990, 1440), (20, 22, 26), (120, 130, 140), 8, r=20)
-    cv.rect((90, 380, 990, 460), (40, 120, 90))
-    cv.text((540, 440), "POLIZEI · FAHNDUNG", font(46, "Black"), WHITE, "ms")
-    shots = [(130, 500), (560, 500), (130, 900), (560, 900)]
+    cv.rect((90, 480, 990, 1460), (20, 22, 26), (120, 130, 140), 8, r=20)
+    cv.rect((90, 480, 990, 550), (40, 120, 90))
+    shots = [(130, 580), (560, 580), (130, 980), (560, 980)]
     for k, (x, y) in enumerate(shots):
         if t * 5 > k:
-            cv.rect((x, y, x + 390, y + 360), (70, 80, 90), WHITE, 3)
+            cv.rect((x, y, x + 390, y + 340), (70, 80, 90), WHITE, 3)
             rig.head(cv, x + 195, y + 150, 80, DU, rig.Pose(mood="happy", mouth=0.6 if k % 2 else 0), 0)
-            cv.rect((x + 120, y + 230, x + 270, y + 360), C["red_j"])
+            cv.rect((x + 120, y + 230, x + 270, y + 340), C["red_j"])
             cv.text((x + 14, y + 14), f"CAM {k * 3 + 2:02d}", mono(26), (255, 80, 80))
-    if t > 0.6:
-        k = ease(seg(t, 0.6, 0.8))
-        cv.rect((180, 1180 - 40 * k, 900, 1300), (230, 40, 40, int(220 * k)), WHITE, 6, r=14)
-        cv.text((540, 1268), "TATVERDÄCHTIG", font(78, "Black"), WHITE, "ms")
+    if t > 0.85:
+        k = ease(seg(t, 0.85, 0.95))
+        cv.rect((180, 1340 - 30 * k, 900, 1450), (230, 40, 40, int(220 * k)), WHITE, 6, r=14)
+        cv.text((540, 1425), "TATVERDÄCHTIG", font(78, "Black"), WHITE, "ms")
 
 
 def s_final(cv, t):
