@@ -174,8 +174,8 @@ def s_note(cv, t):
         cv.poly([(300, 1100), (780, 1100), (640, 700), (440, 700)], (90, 80, 70))
         cv.rect((440, 560, 640, 700), (40, 44, 56))
         cv.circle(540, 820, 420, None, (10, 12, 20), 40)
-        if t > 0.75:  # note on the doormat
-            k = ease(seg(t, 0.75, 0.85))
+        if t > 0.58:  # note on the doormat
+            k = ease(seg(t, 0.58, 0.68))
             cv.rect((300, 1200, 780, 1500), (250, 246, 236, int(255 * k)), INK, 5, r=8)
             cv.text((540, 1380), "Gratuliere.", font(70, "Black"), INK, "ms")
 
@@ -211,7 +211,7 @@ def s_copy(cv, t):
     figure(cv, 720, 1010, 55, CLERK, rig.Pose(sh_n=60, el_n=40, mood="neutral"), facing=-1)
     cv.rect((100, 960, 980, 1180), (160, 120, 90), INK, 6)  # counter
     cv.rect((420, 860, 640, 980), (30, 30, 34), INK, 4, r=10)
-    bad = t > 0.45
+    bad = t > 0.55
     cv.rect((440, 880, 620, 960), (230, 40, 40) if bad else (60, 80, 120))
     cv.text((530, 935), "KOPIE" if bad else "...", font(40, "Black"), WHITE, "ms")
     ticket(cv, 230, 760, 0.6)
