@@ -44,6 +44,17 @@ Der Nutzer hat bei „Der Zeuge“ nicht verstanden, worum es geht. Deshalb ab s
 - Ende immer mit Cliffhanger + Frage an die Zuschauer (Kommentare entscheiden Teil 2).
 - Videos wegen Größe mit ~9 Mbit/s ausgeben (Filmkorn bläht sonst auf >300 MB).
 
+## STIL 3 (ab Video „Reich in 30 Tagen“, Vorlage: Screenrecording 03.11.) – aktueller Standard
+- **Cartoon-Figur MIT Gesicht** (frontal): Hautfarbe, braune Haare mit Pony, große runde Augen mit
+  Glanzpunkt, rosa Wangen, ausdrucksstarker Mund (staunen, Sorge, verlegen …), blauer Hoodie mit
+  Kordeln, Handy in der Hand. Code: `tiktok/reich/style3.py`.
+- Figur groß und mittig; Kamera startet weit und zoomt langsam auf die Figur.
+- Einfache, helle Hintergründe (z. B. Zimmer bei Nacht mit Stadtfenster), fallende Objekte
+  (Geldscheine), Geldberge im Vordergrund.
+- **Ein Info-Chip oben** (z. B. grün „100.000.000 $“, rot „⚠ KEIN HERKUNFTSNACHWEIS“) statt Spiel-HUD.
+- Untertitel weiß mit schwarzer Kontur, Schlagwort **gelb** hervorgehoben.
+- Erzählung bleibt in der Du-Form.
+
 ## Kanal
 - Name: **Du-Geschichten 🎭** (@du.geschichten), Profilbild: `tiktok/profilbild/profilbild_B_pink.png`
 - Bio: „Jede Geschichte passiert DIR. 🎭 / Teil 2 entscheidest du in den Kommentaren 👇“
