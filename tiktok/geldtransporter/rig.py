@@ -24,6 +24,7 @@ class Look:
     hat_kind: str = "cap"             # cap | beanie | guard
     hair: tuple | None = None
     mask: bool = False                # balaclava
+    skin: tuple = (244, 241, 234)     # face colour (zombies: green)
     name: str = ""
 
 
@@ -138,7 +139,7 @@ def figure(cv, x, y_feet, r, look: Look, pose: Pose, facing=1, show_name=False):
 
 
 def head(cv, x, y, r, look, pose, facing):
-    skin = (34, 34, 38) if look.mask else WHITE
+    skin = (34, 34, 38) if look.mask else look.skin
     if look.hair and not look.mask:
         cv.circle(x - 0.08 * r * facing, y - 0.12 * r, r * 1.04, look.hair)
     cv.circle(x, y, r, skin, INK, 4)
@@ -151,6 +152,8 @@ def head(cv, x, y, r, look, pose, facing):
         exk = ex + (k - 0.5) * gap
         if pose.blink:
             cv.line([(exk - 0.09 * r, ey), (exk + 0.09 * r, ey)], INK, 5)
+        elif pose.mood == "zombie":
+            cv.circle(exk, ey, 0.11 * r, (250, 250, 220), INK, 3)
         elif pose.mood == "shock":
             cv.circle(exk, ey, 0.12 * r, WHITE, INK, 3)
             cv.circle(exk, ey, 0.05 * r, INK)
@@ -174,6 +177,9 @@ def head(cv, x, y, r, look, pose, facing):
             cv.rect((x - r * 0.4 + 0.5 * r * facing, y - 0.45 * r, x + r * 0.4 + 0.9 * r * facing, y - 0.3 * r),
                     shade(look.hat), r=6)
             cv.rect((x - 0.15 * r, y - 0.95 * r, x + 0.15 * r, y - 0.7 * r), (230, 190, 70), r=4)
+        elif look.hat_kind == "helmet":
+            cv.d.chord(cv.s((x - 1.08 * r, y - 1.25 * r, x + 1.08 * r, y + 0.45 * r)), 180, 360, fill=look.hat)
+            cv.rect((x - 1.15 * r, y - 0.42 * r, x + 1.15 * r, y - 0.28 * r), shade(look.hat), r=6)
         elif look.hat_kind == "beanie":
             cv.d.chord(cv.s((x - 1.02 * r, y - 1.2 * r, x + 1.02 * r, y + 0.55 * r)), 180, 360, fill=look.hat)
             cv.rect((x - 1.05 * r, y - 0.45 * r, x + 1.05 * r, y - 0.25 * r), shade(look.hat, 1.2), r=6)
