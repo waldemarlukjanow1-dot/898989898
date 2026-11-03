@@ -95,7 +95,7 @@ def main():
     d.text((MARGIN, 310), "Ein Info-Chip oben, Untertitel mit gelbem Schlagwort, Kamera zoomt langsam auf dich. Du-Form.",
            font=S.font(38, "Medium"), fill=MUTED)
     chips = [("LÄNGE", "~62 Sek."), ("FORMAT", "9:16 · 1080×1920"), ("SEQUENZEN", str(len(SEQ))),
-             ("STIMME", "Deutsch, männlich, ruhig"), ("TWIST", "Deine Mutter")]
+             ("STIMME", "Deutsch, männlich, ruhig"), ("TWIST", "Passwort vergessen")]
     x = MARGIN
     for lab, val in chips:
         fv = S.font(40, "Black")
@@ -105,7 +105,7 @@ def main():
         d.text((x + 25, 452), val, font=fv, fill=WHITE)
         x += w + 20
     d.text((MARGIN, 580), "Spannungsbogen:", font=S.font(36, "Black"), fill=GOLD)
-    arc = "43 € Kontostand  →  Krypto −100 %  →  100 Rücksendungen  →  Guru-Kurs mit Mamas Geld  →  PAUSE  →  „Verkauf diesen Kurs“  →  du wirst Guru  →  reich  →  Nachricht  →  es ist Mama  →  Cliffhanger"
+    arc = "43 € Kontostand  →  Krypto −100 %  →  100 Rücksendungen  →  Guru-Kurs mit letztem Geld  →  PAUSE  →  „Verkauf diesen Kurs“  →  du wirst Guru  →  10 Mio.  →  Wallet + Passwort  →  Passwort falsch → gesperrt  →  Cliffhanger"
     wrap(d, (MARGIN + 360, 584), arc, S.font(34, "Medium"), WHITE, PW - 2 * MARGIN - 360)
 
     # ---------- grid

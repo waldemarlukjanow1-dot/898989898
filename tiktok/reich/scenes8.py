@@ -25,13 +25,6 @@ def phone_ui(cv, x0, y0, x1, y1, title=None):
         cv.text(((x0 + x1) / 2, y0 + 56), title, font(36, "Black"), INK, "ms")
 
 
-def mom_avatar(cv, x, y, r):
-    cv.circle(x, y - r * 0.9, r * 0.45, (150, 120, 100), INK, 4)  # bun
-    cv.circle(x, y, r, SKIN, INK, 5)
-    cv.d.chord(cv.s((x - r * 1.05, y - r * 1.05, x + r * 1.05, y + r * 0.5)), 180, 360, fill=(150, 120, 100))
-    T.face(cv, x, y + r * 0.15, r, "happy")
-
-
 def box(cv, x, y, w, h, stamp=False):
     cv.rect((x, y, x + w, y + h), (200, 150, 90), INK, 5, r=6)
     cv.rect((x + w * 0.42, y, x + w * 0.58, y + h), (220, 180, 120))
@@ -98,13 +91,12 @@ def s_guru(cv, t, dur):
         cv.rect((200, 590, 880, 680), (0, 0, 0, 150), r=10)
         cv.text((540, 655), "REICH IN 30 TAGEN", font(52, "Black"), YELLOW, "ms")
     else:
-        T.character(cv, 620, FEET, SCALE, "worry", "down", blink=blink_at(t, dur))
-        k = ease(seg(t, 0.62, 0.8))
-        hx = -120 + 400 * k
-        cv.rect((-200, 980, hx - 40, 1080), (170, 90, 130), INK, 6, r=40)  # mum's sleeve
-        cv.circle(hx, 1030, 50, SKIN, INK, 6)
-        for j in range(3):
-            T.bill(cv, hx + 40 + j * 16, 990 + j * 12, 150, -0.2 + j * 0.1)
+        T.character(cv, CX, FEET, SCALE, "worry", "phone", blink=blink_at(t, dur))
+        k = seg(t, 0.62, 1.0)
+        for j in range(3):  # last bills fly into the phone
+            u = max(0.0, min(1.0, k * 1.6 - j * 0.25))
+            if 0 < u < 1:
+                T.bill(cv, 150 + (680 - 150) * u, 1350 - (1350 - 1020) * u, 150 * (1 - 0.6 * u), u * 3)
 
 
 def s_pause(cv, t, dur):
@@ -156,43 +148,65 @@ def night(cv):
     cv.overlay((10, 12, 30), 140)
 
 
-def s_msg(cv, t, dur):
-    night(cv)
-    cv.glow(CX + 90, 1030, 260, (150, 200, 255), 120)
-    T.character(cv, CX, FEET, SCALE, "worry", "phone", blink=blink_at(t, dur))
-    k = ease(seg(t, 0.15, 0.35))
-    if k > 0:
-        y = 470 + 40 * (1 - k)
-        cv.rect((120, y, 960, y + 250), (250, 250, 252, int(255 * k)), INK, 5, r=34)
-        cv.circle(200, y + 70, 46, (200, 200, 210))
-        cv.text((270, y + 82), "Neue Nachricht", font(36, "Black"), INK)
-        cv.text((160, y + 160), "Ich habe alles in deinen Kurs", font(38, "Bold"), INK)
-        cv.text((160, y + 215), "gesteckt. Jetzt habe ich nichts mehr.", font(34, "Bold"), INK)
+def wallet_phone(cv, x0=70, y0=440, x1=590, y1=1000):
+    phone_ui(cv, x0, y0, x1, y1, "KRYPTO-WALLET")
 
 
-def s_mama(cv, t, dur):
+def lock_icon(cv, x, y, s=1.0, col=(220, 40, 50)):
+    cv.arc((x - 70 * s, y - 150 * s, x + 70 * s, y + 10 * s), 180, 360, INK, int(34 * s))
+    cv.arc((x - 70 * s, y - 150 * s, x + 70 * s, y + 10 * s), 180, 360, (170, 170, 180), int(24 * s))
+    cv.rect((x - 110 * s, y - 70 * s, x + 110 * s, y + 110 * s), col, INK, 6, r=int(20 * s))
+    cv.circle(x, y + 10 * s, 22 * s, INK)
+    cv.rect((x - 8 * s, y + 10 * s, x + 8 * s, y + 60 * s), INK)
+
+
+def s_wallet(cv, t, dur):
+    T.bedroom(cv)
+    T.character(cv, 790, FEET, SCALE * 0.85, "happy" if t < 0.6 else "smug", "point", blink=blink_at(t, dur))
+    wallet_phone(cv)
+    k = ease(seg(t, 0.05, 0.5))
+    cv.text((330, 640), f"{int(9970000 * k):,} €".replace(",", "."), font(54, "Black"), (40, 140, 70), "ms")
+    for j in range(4):  # bills flying into the wallet
+        u = max(0.0, min(1.0, t * 2.2 - j * 0.25))
+        if 0 < u < 1:
+            T.bill(cv, 700 - 380 * u + j * 30, 1300 - 650 * u, 140 * (1 - 0.5 * u), u * 4)
+    if t > 0.55:
+        cv.rect((110, 760, 550, 850), WHITE, (180, 180, 190), 4, r=16)
+        n = min(10, int(seg(t, 0.55, 0.9) * 10) + 1)
+        cv.text((140, 805), "•" * n, font(60, "Black"), INK, "lm")
+        cv.text((330, 900), "Passwort", font(30, "Bold"), (120, 120, 130), "ms")
+
+
+def s_password(cv, t, dur):
     night(cv)
-    T.character(cv, CX, FEET + 200, SCALE, "sad", "down", tear=t > 0.4)
-    phone_ui(cv, 220, 420, 860, 1100, "Profil")
-    k = ease(seg(t, 0.1, 0.4))
-    mom_avatar(cv, 540, 680, 120 * (0.6 + 0.4 * k))
-    cv.text((540, 900), "Mama", font(80, "Black"), INK, "ms")
-    cv.text((540, 980), "Käufe: REICH IN 30 TAGEN", font(32, "Bold"), (220, 40, 50), "ms")
-    cv.circle(706, 860, 18, (230, 60, 90))
-    cv.circle(734, 860, 18, (230, 60, 90))
-    cv.poly([(690, 868), (750, 868), (720, 900)], (230, 60, 90))
+    tries = 3 - min(3, int(t * 4.2))
+    locked = tries == 0
+    T.character(cv, 790, FEET, SCALE * 0.85, "shock" if locked else "worry", "head" if locked else "down", blink=blink_at(t, dur))
+    wallet_phone(cv)
+    if not locked:
+        cv.rect((110, 560, 550, 650), WHITE, (220, 40, 50), 6, r=16)
+        cv.text((140, 605), "•" * 8, font(60, "Black"), INK, "lm")
+        cv.text((330, 740), "PASSWORT FALSCH", font(44, "Black"), (220, 40, 50), "ms")
+        cv.text((330, 820), f"Noch {tries} Versuch" + ("e" if tries != 1 else ""), font(40, "Bold"), INK, "ms")
+    else:
+        lock_icon(cv, 330, 720, 1.1)
+        cv.text((330, 940), "GESPERRT", font(62, "Black"), (220, 40, 50), "ms")
 
 
 def s_final(cv, t, dur):
     T.bedroom(cv)
-    T.money_pile(cv, 1460, seed=5)
-    T.character(cv, CX, FEET - 40, SCALE * 0.95, "sad", "phone", blink=blink_at(t, dur))
-    for (x0, x1), lab, bg, fg in (((60, 500), "ZURÜCKZAHLEN", WHITE, INK), ((530, 920), "WEITERMACHEN", (40, 120, 60), YELLOW)):
+    T.money_pile(cv, 1100, seed=5, n=60)
+    for k in range(9):  # bars of a vault in front of the money
+        cv.rect((60 + k * 120, 820, 84 + k * 120, 1300), (150, 150, 160), INK, 4)
+    cv.rect((40, 800, 1040, 840), (150, 150, 160), INK, 4)
+    lock_icon(cv, 890, 1010, 0.9)
+    T.character(cv, CX, FEET + 60, SCALE * 0.9, "sad", "down", tear=t > 0.3, blink=blink_at(t, dur))
+    for (x0, x1), lab, bg, fg in (((60, 500), "WEITER RATEN", WHITE, INK), ((530, 920), "NEU ANFANGEN", (40, 120, 60), YELLOW)):
         cv.rect((x0, 1330, x1, 1440), bg, INK, 6, r=28)
         cv.text(((x0 + x1) / 2, 1405), lab, font(46, "Black"), fg, "ms")
 
 
-SCENES = [s_broke, s_crypto, s_drop, s_guru, s_pause, s_lesson, s_newguru, s_rich, s_msg, s_mama, s_final]
+SCENES = [s_broke, s_crypto, s_drop, s_guru, s_pause, s_lesson, s_newguru, s_rich, s_wallet, s_password, s_final]
 PAUSE = 4
 FOCUS = {i: (540, 820) for i in range(11)}
 
@@ -202,7 +216,7 @@ def render(i, t=0.5, dur=5.0):
     SCENES[i](cv, t, dur)
     img = cv.final()
     z = 0.04 + 0.14 * ease(t)  # wide -> closer, like the reference
-    if i in (1, 5, 9, 10):  # scenes with screens/buttons: gentle zoom only
+    if i in (1, 5, 8, 9, 10):  # scenes with screens/buttons: gentle zoom only
         z = 0.02 + 0.05 * ease(t)
     img = T.camera(img, z, *FOCUS[i])
     if i == PAUSE:
