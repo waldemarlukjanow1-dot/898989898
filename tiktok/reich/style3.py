@@ -261,10 +261,15 @@ def caption(img, words, hi=(), y=1260, visible=None):
     """White caption, black outline, keyword in yellow (reference style)."""
     visible = len(words) if visible is None else visible
     d = ImageDraw.Draw(img, "RGBA")
-    f = font(70, "Black")
-    space = d.textlength(" ", font=f)
-    widths = [d.textlength(w_, font=f) for w_ in words]
-    total = sum(widths) + space * (len(words) - 1)
+    size = 70
+    while True:
+        f = font(size, "Black")
+        space = d.textlength(" ", font=f)
+        widths = [d.textlength(w_, font=f) for w_ in words]
+        total = sum(widths) + space * (len(words) - 1)
+        if total <= 820 or size <= 40:
+            break
+        size -= 4
     x = 500 - total / 2
     for i, w_ in enumerate(words):
         if i >= visible:

@@ -55,17 +55,17 @@ def s_broke(cv, t, dur):
 def s_crypto(cv, t, dur):
     T.bedroom(cv, lights=False)
     phone_ui(cv, 150, 450, 930, 790, "MOONCOIN")
-    k = seg(t, 0.05, 0.85)
+    k = seg(t, 0.05, 0.9)
     pts = []
     for i in range(int(40 * k) + 1):
         u = i / 40
-        v = 0.15 + 0.7 * min(u / 0.45, 1) if u < 0.55 else max(0.02, 0.85 - (u - 0.55) * 3.2)
+        v = 0.15 + 0.7 * min(u / 0.6, 1) if u < 0.75 else max(0.02, 0.85 - (u - 0.75) * 4.5)
         pts.append((190 + u * 700, 770 - v * 230))
     if len(pts) > 1:
         cv.line(pts, (40, 180, 80) if k < 0.55 else (220, 40, 50), 10)
     if k > 0.8:
         cv.text((540, 690), "-100 %", font(110, "Black"), (220, 40, 50), "ms")
-    mood = "happy" if k < 0.55 else "shock"
+    mood = "happy" if k < 0.75 else "shock"
     T.character(cv, CX, FEET + 120, SCALE * 0.95, mood, "phone", blink=blink_at(t, dur))
 
 
@@ -77,12 +77,12 @@ def s_drop(cv, t, dur):
     spots = [(40, 1300), (210, 1330), (60, 1150), (780, 1300), (900, 1330), (820, 1150), (-20, 1000), (900, 1000),
              (120, 1460), (800, 1460)]
     for k, (x, y) in enumerate(spots[:n]):
-        box(cv, x, y, 200, 160, stamp=t > 0.55 + k * 0.03)
+        box(cv, x, y, 200, 160, stamp=t > 0.68 + k * 0.025)
 
 
 def s_guru(cv, t, dur):
     T.bedroom(cv)
-    if t < 0.62:
+    if t < 0.78:
         phone_ui(cv, 160, 470, 920, 1180, "@reich.in.30.tagen")
         cv.rect((180, 560, 900, 1160), (120, 190, 240))
         cv.rect((180, 1000, 900, 1160), (90, 90, 96))
@@ -92,7 +92,7 @@ def s_guru(cv, t, dur):
         cv.text((540, 655), "REICH IN 30 TAGEN", font(52, "Black"), YELLOW, "ms")
     else:
         T.character(cv, CX, FEET, SCALE, "worry", "phone", blink=blink_at(t, dur))
-        k = seg(t, 0.62, 1.0)
+        k = seg(t, 0.78, 1.0)
         for j in range(3):  # last bills fly into the phone
             u = max(0.0, min(1.0, k * 1.6 - j * 0.25))
             if 0 < u < 1:
@@ -179,15 +179,17 @@ def s_wallet(cv, t, dur):
 
 def s_password(cv, t, dur):
     night(cv)
-    tries = 3 - min(3, int(t * 4.2))
+    tries = 2 if t < 0.56 else (1 if t < 0.72 else 0)
     locked = tries == 0
+    wrong = t >= 0.2
     T.character(cv, 790, FEET, SCALE * 0.85, "shock" if locked else "worry", "head" if locked else "down", blink=blink_at(t, dur))
     wallet_phone(cv)
     if not locked:
-        cv.rect((110, 560, 550, 650), WHITE, (220, 40, 50), 6, r=16)
-        cv.text((140, 605), "•" * 8, font(60, "Black"), INK, "lm")
-        cv.text((330, 740), "PASSWORT FALSCH", font(44, "Black"), (220, 40, 50), "ms")
-        cv.text((330, 820), f"Noch {tries} Versuch" + ("e" if tries != 1 else ""), font(40, "Bold"), INK, "ms")
+        cv.rect((110, 560, 550, 650), WHITE, (220, 40, 50) if wrong else (180, 180, 190), 6, r=16)
+        cv.text((140, 605), "•" * min(8, int(t * 60) + 1), font(60, "Black"), INK, "lm")
+        if wrong:
+            cv.text((330, 740), "PASSWORT FALSCH", font(44, "Black"), (220, 40, 50), "ms")
+            cv.text((330, 820), f"Noch {tries} Versuch" + ("e" if tries != 1 else ""), font(40, "Bold"), INK, "ms")
     else:
         lock_icon(cv, 330, 720, 1.1)
         cv.text((330, 940), "GESPERRT", font(62, "Black"), (220, 40, 50), "ms")
