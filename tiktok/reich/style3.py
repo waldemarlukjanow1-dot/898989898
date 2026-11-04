@@ -96,7 +96,8 @@ def face(cv, x, y, r, mood="neutral", blink=False, look=(0, 0), talk=0.0, glasse
 
 
 def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, talk=0.0, look=(0, 0),
-              glasses=False, chain=False, tear=False, bob=0.0, hoodie=HOODIE):
+              glasses=False, chain=False, tear=False, bob=0.0, hoodie=HOODIE, hair=HAIR, tie=False,
+              bald=False, mustache=False, specs=False):
     """Front-view character. s=1 -> about 1000 px tall."""
     r = 150 * s
     y_feet += bob
@@ -129,6 +130,9 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
     for sx in (-1, 1):
         cv.line([(x + sx * 45 * s, sh_y + 20 * s), (x + sx * 45 * s, sh_y + 130 * s)], WHITE, 7 * s)
         cv.circle(x + sx * 45 * s, sh_y + 136 * s, 9 * s, WHITE, INK, 2)
+    if tie:
+        cv.poly([(x - 30 * s, sh_y + 20 * s), (x + 30 * s, sh_y + 20 * s), (x + 40 * s, sh_y + 220 * s), (x, sh_y + 270 * s),
+                 (x - 40 * s, sh_y + 220 * s)], (200, 40, 50), INK, 5)
     if chain:
         cv.arc((x - 110 * s, sh_y - 40 * s, x + 110 * s, sh_y + 150 * s), 20, 160, YELLOW, int(14 * s))
         cv.circle(x, sh_y + 150 * s, 26 * s, YELLOW, INK, 4)
@@ -151,14 +155,25 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
         cv.circle(x + sx * r * 0.98, hy + r * 0.1, r * 0.2, SKIN, INK, 6)
     cv.circle(x, hy, r, SKIN, INK, 7)
     # hair: cap + jagged fringe
-    cv.d.chord(cv.s((x - r * 1.04, hy - r * 1.08, x + r * 1.04, hy + r * 0.7)), 180, 360, fill=HAIR)
+    if bald:  # only a hair ring on the sides
+        for sx in (-1, 1):
+            cv.ellipse((x + sx * r * 0.62 - r * 0.42, hy - r * 0.55, x + sx * r * 0.62 + r * 0.42, hy + r * 0.2), hair)
+    else:
+        cv.d.chord(cv.s((x - r * 1.04, hy - r * 1.08, x + r * 1.04, hy + r * 0.7)), 180, 360, fill=hair)
     fringe = [(x - r * 1.0, hy - r * 0.2)]
     for k in range(7):
         fx = x - r * 0.95 + k * r * 0.32
         fringe += [(fx + r * 0.16, hy - r * (0.5 if k % 2 else 0.32)), (fx + r * 0.32, hy - r * 0.2)]
     fringe += [(x + r * 1.0, hy - r * 0.6), (x, hy - r * 1.1), (x - r * 1.0, hy - r * 0.6)]
-    cv.poly(fringe, HAIR, INK, 5)
+    if not bald:
+        cv.poly(fringe, hair, INK, 5)
     face(cv, x, hy + r * 0.12, r, mood, blink, look, talk, glasses, tear)
+    if mustache:
+        cv.d.chord(cv.s((x - r * 0.3, hy + r * 0.48, x + r * 0.3, hy + r * 0.78)), 180, 360, fill=hair)
+    if specs:
+        for sx in (-1, 1):
+            cv.circle(x + sx * r * 0.38, hy + r * 0.17, r * 0.33, None, INK, 6)
+        cv.line([(x - r * 0.05, hy + r * 0.12), (x + r * 0.05, hy + r * 0.12)], INK, 6)
     if arms == "head":
         cv.circle(x + 160 * s, hy - 60 * s, 46 * s, SKIN, INK, 6)
     return hy
