@@ -70,7 +70,7 @@ def s_comment(cv, t, dur):
     T.bedroom(cv)
     T.character(cv, CX, FEET + 230, SCALE, "angry" if t > 0.45 else "neutral", "down", blink=blink_at(t, dur))
     phone_ui(cv, 140, 440, 940, 1040, "Kommentare")
-    for j, (name, txt) in enumerate((("lisa_92", "Krasse Story 😳"), ("user8841", "Geh einfach arbeiten."), ("max.m", "Teil 2?!"))):
+    for j, (name, txt) in enumerate((("lisa_92", "Krasse Story 😳"), ("bruder.1987", "Geh einfach arbeiten."), ("max.m", "Teil 2?!"))):
         y = 560 + j * 150
         hl = j == 1 and t > 0.2
         cv.rect((170, y, 910, y + 120), (255, 245, 200) if hl else WHITE, (200, 200, 210), 3, r=18)
@@ -94,7 +94,7 @@ COSTS = [("Miete", 900), ("Auto", 300), ("Essen", 400), ("Handy, Strom,\nVersich
 
 
 def costs_shown(t):
-    return min(4, int(seg(t, 0.05, 0.95) * 4.0 + 0.5) if t > 0.05 else 0)
+    return sum(t >= th for th in (0.01, 0.25, 0.46, 0.65))
 
 
 def s_costs(cv, t, dur):
@@ -109,7 +109,7 @@ def s_costs(cv, t, dur):
         cv.text((590, y + 40), lab.split("\n")[0], font(34 if "\n" not in lab else 28, "Bold"), INK)
         cv.text((980, y + 40), f"-{val} €", font(38, "Black"), RED, "rs")
     for j in range(n):  # a bill flies away for each cost
-        u = min(1.0, max(0.0, (t - j * 0.22 - 0.05) / 0.2))
+        u = min(1.0, max(0.0, (t - (0.01, 0.25, 0.46, 0.65)[j]) / 0.18))
         if 0 < u < 1:
             T.bill(cv, 420 + 300 * u, 1100 - 500 * u, 150, u * 5)
 
@@ -144,11 +144,11 @@ def s_holiday(cv, t, dur):
 def s_boss(cv, t, dur):
     office(cv, boss_room=True)
     T.character(cv, 300, FEET + 40, SCALE * 0.9, "worry", "down", blink=blink_at(t, dur), look=(1, 0))
-    talk = abs(math.sin(t * dur * 9)) if t > 0.45 else 0
+    talk = abs(math.sin(t * dur * 9)) if t > 0.5 else 0
     T.character(cv, 760, 1560, 0.85, "angry", "down", talk=talk, **BOSS)
     cv.rect((520, 1320, 1080, 1380), (110, 70, 50), INK, 6, r=10)  # boss desk
     cv.rect((540, 1380, 1060, 1700), (90, 56, 40), INK, 6)
-    if t < 0.45:  # your speech bubble
+    if t < 0.5:  # your speech bubble
         cv.rect((60, 500, 520, 660), WHITE, INK, 5, r=30)
         cv.text((290, 565), "Chef, frei im", font(40, "Black"), INK, "ms")
         cv.text((290, 625), "August?", font(40, "Black"), INK, "ms")
@@ -200,14 +200,14 @@ def s_old(cv, t, dur):
 
 def s_profile(cv, t, dur):
     T.bedroom(cv, lights=False)
-    T.character(cv, CX, FEET + 230, SCALE, "shock" if t > 0.6 else "neutral", "down", blink=blink_at(t, dur))
+    T.character(cv, CX, FEET + 230, SCALE, "shock" if t > 0.7 else "neutral", "down", blink=blink_at(t, dur))
     phone_ui(cv, 180, 440, 900, 1080, "Profil")
-    k = ease(seg(t, 0.35, 0.6))
+    k = ease(seg(t, 0.55, 0.75))
     cv.circle(540, 700, 150, (220, 222, 230), INK, 5)
     if k > 0:
         T.character(cv, 540, 700 + 150 + 150 * 0.4 * 0 + 520 * 0.5, 0.5, "smug", "down", **BOSS)
         cv.rect((180, 860, 900, 1080), (245, 247, 250))
-    cv.text((540, 930), "user8841" if k < 0.5 else "Dein Chef", font(60, "Black"), INK, "ms")
+    cv.text((540, 930), "bruder.1987" if k < 0.5 else "Dein Chef", font(60, "Black"), INK, "ms")
     cv.text((540, 1000), "Kommentar: „Geh einfach arbeiten.“", font(28, "Bold"), (120, 120, 130), "ms")
 
 
