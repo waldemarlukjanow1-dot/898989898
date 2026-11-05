@@ -140,8 +140,7 @@ def s_phone(cv, t, dur):
 
 def s_box(cv, t, dur):
     T.bedroom(cv)
-    k = 1 - ease(seg(t, 0.55, 0.9))
-    shoebox(cv, 520, 1360, open_k=k)
+    shoebox(cv, 520, 1360, open_k=1.0)
     T.character(cv, 330, FEET, SCALE * 0.9, "worry", "down", look=(1, 1), hoodie=HOOD_DARK, blink=blink_at(t, dur))
 
 
@@ -177,12 +176,22 @@ def s_friend(cv, t, dur):
     if k > 0:
         cv.rect((180, 560, 860, 700), (230, 233, 240), (200, 200, 210), 3, r=26)
         cv.text((210, 645), "Sie haben Deniz geholt.", font(42, "Black"), INK)
-    if t > 0.55:
+    if t > 0.72:
         cv.rect((180, 740, 700, 860), (230, 233, 240), (200, 200, 210), 3, r=26)
         cv.text((210, 815), "Was hat er erzählt?", font(38, "Bold"), (120, 120, 130))
 
 
 def s_door(cv, t, dur):
+    if t < 0.52:  # the bell rings, you stare at the door
+        T.bedroom(cv, lights=False)
+        cv.overlay((10, 12, 30), 90)
+        cv.rect((640, 380, 980, 1250), (110, 80, 60), INK, 6)
+        cv.circle(810, 640, 16, (220, 200, 120), INK, 3)
+        rings = int(t * dur * 1.6) % 3
+        for r_ in range(rings + 1):
+            cv.arc((900 - 50 - r_ * 40, 760 - 50 - r_ * 40, 900 + 50 + r_ * 40, 760 + 50 + r_ * 40), 300, 60, YELLOW, 8)
+        T.character(cv, 360, FEET, SCALE * 0.95, "shock", "down", hoodie=HOOD_DARK, look=(1, 0))
+        return
     cv.rect((0, 0, W, H), (10, 12, 20))
     cv.circle(540, 900, 470, (90, 96, 110))
     on = int(t * dur * 3) % 2 == 0
