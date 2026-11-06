@@ -114,6 +114,10 @@ def bedroom_night(cv):
 # ------------------------------------------------------------------ scenes (cv, t, dur)
 
 def s_auction(cv, t, dur):
+    if t > 0.56:  # "Drinnen: Staub, Kartons, ein kaputtes Fahrrad."
+        dusty_unit(cv)
+        hero(cv, 540, FEET, SCALE * 0.9, "neutral", "down", look=(1 if (t * dur) % 2 < 1 else -1, 0), blink=blink_at(t, dur))
+        return
     storage_hall(cv)
     # auctioneer with hammer (left)
     hero_kw = dict(hoodie=(60, 60, 70), hair=(150, 150, 156), hair_style="fringe", outfit="hoodie", mustache=False, goatee=False)
@@ -142,8 +146,8 @@ def s_safe_found(cv, t, dur):
 
 def s_gold(cv, t, dur):
     dusty_unit(cv)
-    day = 1 + min(2, int(seg(t, 0.05, 0.45) * 3))
-    open_k = ease(seg(t, 0.45, 0.6))
+    day = 1 + min(2, int(seg(t, 0.03, 0.33) * 3))
+    open_k = ease(seg(t, 0.33, 0.47))
 
     def inner(a, b, c, d):
         if open_k > 0:
@@ -154,7 +158,7 @@ def s_gold(cv, t, dur):
     if open_k > 0:
         cv.glow(UX, 830, 420 * open_k, GOLD, int(150 * open_k))
         sparkles(cv, t * dur / 3, UX, 830, 12, 320)
-    if t < 0.45:
+    if t < 0.33:
         cv.rect((UX - 110, 480, UX + 110, 560), WHITE, INK, 5, r=16)
         cv.text((UX, 538), f"TAG {day}", font(50, "Black"), INK, "ms")
     hero(cv, 860, FEET + 60, SCALE * 0.75, "shock" if open_k > 0.5 else "worry", "down", blink=blink_at(t, dur))
@@ -165,15 +169,15 @@ def s_laugh(cv, t, dur):
     cv.glow(300, 1300, 360, GOLD, 120)
     gold_stack(cv, 60, 1380, rows=4, per=3, w=150, h=60, t=t)
     sparkles(cv, t * dur / 3, 300, 1250, 8, 260)
-    laughing = t < 0.4
+    laughing = t < 0.19
     hero(cv, 680, FEET, SCALE, "happy" if laughing else "worry", "up" if laughing else "head",
          talk=abs(math.sin(t * dur * 10)) if laughing else 0, bob=-12 * abs(math.sin(t * dur * 6)) if laughing else 0)
 
 
 def s_sell(cv, t, dur):
     cv.rect((0, 0, W, H), (232, 222, 200))
-    cv.rect((60, 450, 940, 545), (40, 40, 46), INK, 5, r=10)
-    cv.text((UX, 522), "GOLDANKAUF", font(70, "Black"), GOLD, "ms")
+    cv.rect((60, 470, 940, 560), (40, 40, 46), INK, 5, r=10)
+    cv.text((UX, 540), "GOLDANKAUF", font(70, "Black"), GOLD, "ms")
     cv.rect((0, 1150, W, H), (150, 120, 90))
     # dealer behind the counter
     T.character(cv, 300, 1380, 0.8, "neutral", "point", talk=abs(math.sin(t * dur * 8)) if t < 0.7 else 0,
@@ -190,7 +194,7 @@ def s_sell(cv, t, dur):
         cv.text((590, 780), "Ausweis-Nr.: ___", font(32, "Bold"), INK)
         cv.text((590, 870), "HERKUNFT:", font(36, "Black"), RED)
         cv.rect((590, 900, 910, 980), (255, 240, 240), RED, 4, r=8)
-        if t > 0.75:
+        if t > 0.8:
             cv.text((750, 960), "???", font(50, "Black"), RED, "ms")
 
 
@@ -230,12 +234,12 @@ def s_note_find(cv, t, dur):
     cv.glow(UX, 860, 360, GOLD, 90)
 
     def inner(a, b, c, d):
-        lift = ease(seg(t, 0.3, 0.6)) * 120
+        lift = ease(seg(t, 0.45, 0.8)) * 120
         gold_bar(cv, a + 130, d - 70 - lift, 110, 50)
         if lift > 60:
             cv.poly([(a + 120, d - 40), (a + 250, d - 50), (a + 255, d - 10), (a + 125, d - 4)], (250, 246, 230), INK, 3)
     safe(cv, UX - 210, 600, 420, 460, 1.0, inner)
-    hero(cv, 860, FEET + 60, SCALE * 0.75, "shock" if t > 0.6 else "neutral", "down")
+    hero(cv, 860, FEET + 60, SCALE * 0.75, "shock" if t > 0.8 else "neutral", "down")
 
 
 def s_note(cv, t, dur):
