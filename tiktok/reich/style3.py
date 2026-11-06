@@ -26,8 +26,8 @@ BLUSH = (246, 160, 170)
 YELLOW = (255, 214, 10)
 # Main character look from video 12 on (user request 06.11.): dark hair, new hairstyle,
 # dark-green jumper with horizontal stripes. Use as: character(..., **HERO)
-HERO = dict(hair=(36, 26, 20), hoodie=(28, 84, 52), outfit="sweater", stripe=(70, 140, 92), hair_style="side",
-            mustache=True)
+HERO = dict(hair=(36, 26, 20), hoodie=(28, 84, 52), outfit="sweater", stripe=(70, 140, 92), hair_style="boxer",
+            mustache=True, goatee=True)
 MONEY = (110, 190, 100)
 MONEY_D = (60, 140, 70)
 
@@ -205,6 +205,25 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
                 (x + r * 0.12, hy - r * 0.12)]
         cv.line(curl, INK, r * 0.1)
         cv.line(curl, hair, r * 0.06)
+    elif hair_style == "boxer":  # Boxerschnitt: sides almost shaved (stubble), short top
+        import math as _m
+        stub = tuple(int(c * 0.55 + h * 0.45) for c, h in zip(SKIN, hair))
+        side = [(x + _m.cos(_m.radians(a_)) * r * 1.01, hy + _m.sin(_m.radians(a_)) * r * 1.01) for a_ in range(165, 376, 5)]
+        side += [(x + r * 0.95, hy - r * 0.05), (x + r * 0.7, hy - r * 0.55), (x - r * 0.7, hy - r * 0.55), (x - r * 0.95, hy - r * 0.05)]
+        cv.poly(side, stub)
+        cv.circle(x, hy, r, None, INK, 7)
+        top = []
+        for a_ in range(210, 331, 4):
+            t_ = (a_ - 210) / 120
+            rad = r * (1.04 + 0.08 * _m.sin(_m.pi * t_) + 0.02 * _m.sin(t_ * _m.pi * 11))
+            top.append((x + _m.cos(_m.radians(a_)) * rad, hy - r * 0.02 + _m.sin(_m.radians(a_)) * rad))
+        low = [(x + r * 0.62, hy - r * 0.6), (x + r * 0.3, hy - r * 0.62), (x + r * 0.05, hy - r * 0.56),
+               (x - r * 0.1, hy - r * 0.62), (x - r * 0.4, hy - r * 0.6), (x - r * 0.62, hy - r * 0.6)]
+        cv.poly(top + low, hair, INK, 5)
+        light = tuple(min(255, c + 40) for c in hair)
+        for k in range(4):
+            cx_ = x - r * 0.35 + k * r * 0.22
+            cv.line([(cx_, hy - r * 1.02), (cx_ + r * 0.05, hy - r * 0.7)], light, 4)
     elif hair_style == "curly":
         cv.d.chord(cv.s((x - r * 1.04, hy - r * 1.05, x + r * 1.04, hy + r * 0.6)), 180, 360, fill=hair)
         import math as _m
