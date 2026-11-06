@@ -102,7 +102,7 @@ def face(cv, x, y, r, mood="neutral", blink=False, look=(0, 0), talk=0.0, glasse
 def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, talk=0.0, look=(0, 0),
               glasses=False, chain=False, tear=False, bob=0.0, hoodie=HOODIE, hair=HAIR, tie=False,
               bald=False, mustache=False, specs=False, hair_style="fringe", outfit="hoodie", stripe=None,
-              goatee=False):
+              goatee=False, facemask=False):
     """Front-view character. s=1 -> about 1000 px tall."""
     r = 150 * s
     y_feet += bob
@@ -265,6 +265,15 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
         pts = [(x - r * 0.13, cy_), (x - r * 0.06, cy_ - r * 0.03), (x + r * 0.06, cy_ - r * 0.03), (x + r * 0.13, cy_),
                (x + r * 0.1, cy_ + r * 0.13), (x, cy_ + r * 0.22), (x - r * 0.1, cy_ + r * 0.13)]
         cv.poly(pts, hair, INK, 4)
+    if facemask:  # light-blue surgical mask with ear loops
+        mx0, mx1 = x - r * 0.48, x + r * 0.48
+        my0, my1 = hy + r * 0.42, hy + r * 0.92
+        for sx in (-1, 1):
+            cv.line([(x + sx * r * 0.48, hy + r * 0.5), (x + sx * r * 0.95, hy + r * 0.12)], (230, 236, 240), 5)
+        cv.rect((mx0, my0, mx1, my1), (190, 225, 245), INK, 4, r=int(r * 0.12))
+        for k in range(3):
+            yy = my0 + (my1 - my0) * (0.28 + k * 0.22)
+            cv.line([(mx0 + r * 0.06, yy), (mx1 - r * 0.06, yy)], (150, 195, 225), 4)
     if specs:
         for sx in (-1, 1):
             cv.circle(x + sx * r * 0.38, hy + r * 0.17, r * 0.33, None, INK, 6)
