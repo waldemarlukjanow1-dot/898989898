@@ -180,16 +180,30 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
     if bald:  # only a hair ring on the sides
         for sx in (-1, 1):
             cv.ellipse((x + sx * r * 0.62 - r * 0.42, hy - r * 0.55, x + sx * r * 0.62 + r * 0.42, hy + r * 0.2), hair)
-    elif hair_style == "side":  # side part, hair hugs the skull, fringe swept to the right
+    elif hair_style == "side":  # side part, short sides, volume on top, loose strands over the forehead
         import math as _m
-        top = [(x + _m.cos(_m.radians(a_)) * r * 1.06, hy - r * 0.02 + _m.sin(_m.radians(a_)) * r * 1.06)
-               for a_ in range(200, 341, 5)]  # short sides: hair stops well above the ears
-        low = [(x + r * 0.97, hy - r * 0.42), (x + r * 0.75, hy - r * 0.42), (x + r * 0.35, hy - r * 0.52),
-               (x - r * 0.15, hy - r * 0.54), (x - r * 0.5, hy - r * 0.42), (x - r * 0.8, hy - r * 0.32),
+        top = []
+        for a_ in range(200, 341, 4):
+            t_ = (a_ - 200) / 140
+            rad = r * (1.05 + 0.2 * _m.sin(_m.pi * t_) + 0.035 * _m.sin(t_ * _m.pi * 9))
+            top.append((x + _m.cos(_m.radians(a_)) * rad, hy - r * 0.02 + _m.sin(_m.radians(a_)) * rad))
+        low = [(x + r * 0.98, hy - r * 0.4), (x + r * 0.72, hy - r * 0.44),
+               (x + r * 0.52, hy - r * 0.2), (x + r * 0.38, hy - r * 0.46),        # strand 1
+               (x + r * 0.1, hy - r * 0.52),
+               (x - r * 0.12, hy - r * 0.14), (x - r * 0.3, hy - r * 0.44),        # strand 2 (longest)
+               (x - r * 0.55, hy - r * 0.4),
+               (x - r * 0.7, hy - r * 0.24), (x - r * 0.8, hy - r * 0.38),          # strand 3
                (x - r * 0.99, hy - r * 0.34)]
         cv.poly(top + low, hair, INK, 5)
-        cv.line([(x - r * 0.42, hy - r * 1.0), (x - r * 0.55, hy - r * 0.42)], tuple(min(255, c + 45) for c in hair), 6)
-        cv.line([(x + r * 0.05, hy - r * 0.95), (x + r * 0.35, hy - r * 0.55)], tuple(min(255, c + 30) for c in hair), 5)
+        light = tuple(min(255, c + 45) for c in hair)
+        cv.line([(x - r * 0.45, hy - r * 1.12), (x - r * 0.55, hy - r * 0.55)], light, 6)   # parting
+        cv.line([(x + r * 0.05, hy - r * 1.15), (x + r * 0.3, hy - r * 0.62)], light, 5)
+        cv.line([(x + r * 0.45, hy - r * 1.05), (x + r * 0.62, hy - r * 0.6)], light, 4)
+        # one loose curl hanging free in front
+        curl = [(x + r * 0.2, hy - r * 0.5), (x + r * 0.28, hy - r * 0.32), (x + r * 0.22, hy - r * 0.16),
+                (x + r * 0.12, hy - r * 0.12)]
+        cv.line(curl, INK, r * 0.1)
+        cv.line(curl, hair, r * 0.06)
     elif hair_style == "curly":
         cv.d.chord(cv.s((x - r * 1.04, hy - r * 1.05, x + r * 1.04, hy + r * 0.6)), 180, 360, fill=hair)
         import math as _m
