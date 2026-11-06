@@ -101,7 +101,8 @@ def face(cv, x, y, r, mood="neutral", blink=False, look=(0, 0), talk=0.0, glasse
 
 def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, talk=0.0, look=(0, 0),
               glasses=False, chain=False, tear=False, bob=0.0, hoodie=HOODIE, hair=HAIR, tie=False,
-              bald=False, mustache=False, specs=False, hair_style="fringe", outfit="hoodie", stripe=None):
+              bald=False, mustache=False, specs=False, hair_style="fringe", outfit="hoodie", stripe=None,
+              goatee=False):
     """Front-view character. s=1 -> about 1000 px tall."""
     r = 150 * s
     y_feet += bob
@@ -233,13 +234,18 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
         fringe += [(x + r * 1.0, hy - r * 0.6), (x, hy - r * 1.1), (x - r * 1.0, hy - r * 0.6)]
         cv.poly(fringe, hair, INK, 5)
     face(cv, x, hy + r * 0.12, r, mood, blink, look, talk, glasses, tear)
-    if mustache:  # thin moustache that droops down around the corners of the mouth
+    if mustache:  # short, thin moustache, slightly drooping at the ends
         my = hy + r * 0.6
         for sx in (-1, 1):
-            pts = [(x, my - r * 0.03), (x + sx * r * 0.13, my - r * 0.045), (x + sx * r * 0.23, my),
-                   (x + sx * r * 0.28, my + r * 0.09), (x + sx * r * 0.29, my + r * 0.17)]
-            cv.line(pts, INK, r * 0.085)
-            cv.line(pts, hair, r * 0.05)
+            pts = [(x, my - r * 0.03), (x + sx * r * 0.1, my - r * 0.04), (x + sx * r * 0.17, my + r * 0.0),
+                   (x + sx * r * 0.2, my + r * 0.06)]
+            cv.line(pts, INK, r * 0.08)
+            cv.line(pts, hair, r * 0.045)
+    if goatee:  # small chin beard below the mouth
+        cy_ = hy + r * 0.93
+        pts = [(x - r * 0.13, cy_), (x - r * 0.06, cy_ - r * 0.03), (x + r * 0.06, cy_ - r * 0.03), (x + r * 0.13, cy_),
+               (x + r * 0.1, cy_ + r * 0.13), (x, cy_ + r * 0.22), (x - r * 0.1, cy_ + r * 0.13)]
+        cv.poly(pts, hair, INK, 4)
     if specs:
         for sx in (-1, 1):
             cv.circle(x + sx * r * 0.38, hy + r * 0.17, r * 0.33, None, INK, 6)
