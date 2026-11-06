@@ -182,11 +182,11 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
             cv.ellipse((x + sx * r * 0.62 - r * 0.42, hy - r * 0.55, x + sx * r * 0.62 + r * 0.42, hy + r * 0.2), hair)
     elif hair_style == "side":  # side part, hair hugs the skull, fringe swept to the right
         import math as _m
-        top = [(x + _m.cos(_m.radians(a_)) * r * 1.07, hy - r * 0.02 + _m.sin(_m.radians(a_)) * r * 1.07)
-               for a_ in range(185, 356, 6)]
-        low = [(x + r * 1.06, hy - r * 0.05), (x + r * 0.78, hy - r * 0.3), (x + r * 0.35, hy - r * 0.5),
-               (x - r * 0.15, hy - r * 0.52), (x - r * 0.5, hy - r * 0.36), (x - r * 0.8, hy - r * 0.12),
-               (x - r * 1.04, hy + r * 0.12)]
+        top = [(x + _m.cos(_m.radians(a_)) * r * 1.06, hy - r * 0.02 + _m.sin(_m.radians(a_)) * r * 1.06)
+               for a_ in range(200, 341, 5)]  # short sides: hair stops well above the ears
+        low = [(x + r * 0.97, hy - r * 0.42), (x + r * 0.75, hy - r * 0.42), (x + r * 0.35, hy - r * 0.52),
+               (x - r * 0.15, hy - r * 0.54), (x - r * 0.5, hy - r * 0.42), (x - r * 0.8, hy - r * 0.32),
+               (x - r * 0.99, hy - r * 0.34)]
         cv.poly(top + low, hair, INK, 5)
         cv.line([(x - r * 0.42, hy - r * 1.0), (x - r * 0.55, hy - r * 0.42)], tuple(min(255, c + 45) for c in hair), 6)
         cv.line([(x + r * 0.05, hy - r * 0.95), (x + r * 0.35, hy - r * 0.55)], tuple(min(255, c + 30) for c in hair), 5)
