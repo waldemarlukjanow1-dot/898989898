@@ -26,7 +26,8 @@ BLUSH = (246, 160, 170)
 YELLOW = (255, 214, 10)
 # Main character look from video 12 on (user request 06.11.): dark hair, new hairstyle,
 # dark-green jumper with horizontal stripes. Use as: character(..., **HERO)
-HERO = dict(hair=(36, 26, 20), hoodie=(28, 84, 52), outfit="sweater", stripe=(70, 140, 92), hair_style="side")
+HERO = dict(hair=(36, 26, 20), hoodie=(28, 84, 52), outfit="sweater", stripe=(70, 140, 92), hair_style="side",
+            mustache=True)
 MONEY = (110, 190, 100)
 MONEY_D = (60, 140, 70)
 
@@ -218,8 +219,12 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
         fringe += [(x + r * 1.0, hy - r * 0.6), (x, hy - r * 1.1), (x - r * 1.0, hy - r * 0.6)]
         cv.poly(fringe, hair, INK, 5)
     face(cv, x, hy + r * 0.12, r, mood, blink, look, talk, glasses, tear)
-    if mustache:
-        cv.d.chord(cv.s((x - r * 0.3, hy + r * 0.48, x + r * 0.3, hy + r * 0.78)), 180, 360, fill=hair)
+    if mustache:  # two curved lobes above the mouth, tips slightly turned up
+        my = hy + r * 0.58
+        for sx in (-1, 1):
+            cv.poly([(x, my - r * 0.04), (x + sx * r * 0.14, my - r * 0.1), (x + sx * r * 0.3, my - r * 0.06),
+                     (x + sx * r * 0.38, my - r * 0.14), (x + sx * r * 0.36, my - r * 0.02), (x + sx * r * 0.22, my + r * 0.04),
+                     (x + sx * r * 0.08, my + r * 0.03)], hair, INK, 4)
     if specs:
         for sx in (-1, 1):
             cv.circle(x + sx * r * 0.38, hy + r * 0.17, r * 0.33, None, INK, 6)

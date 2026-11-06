@@ -56,8 +56,8 @@ Der Nutzer hat bei „Der Zeuge“ nicht verstanden, worum es geht. Deshalb ab s
 - Erzählung bleibt in der Du-Form.
 - **Hauptfigur ab Video 12 (Wunsch 06.11.):** dunkle Haare, neue Frisur, **dunkelgrüner Pullover mit
   waagerechten hellgrünen Streifen** (Rundhals, kein Hoodie). Im Code immer `character(..., **T.HERO)`
-  verwenden (`tiktok/reich/style3.py`). Frisur-Varianten: `side` (Seitenscheitel, Standard),
-  `quiff` (Tolle), `curly` (Locken) – Vorschau: `tiktok/reich/figur_neu_vorschau.png`.
+  verwenden (`tiktok/reich/style3.py`). Festgelegt: **Frisur A = Seitenscheitel** (`side`) und
+  **Schnauzer** (`mustache=True`) – beides ist in `HERO` enthalten. Vorschau: `tiktok/reich/figur_neu_vorschau.png`.
 
 ## Kanal
 - Name: **Du-Geschichten 🎭** (@du.geschichten), Profilbild: `tiktok/profilbild/profilbild_B_pink.png`
