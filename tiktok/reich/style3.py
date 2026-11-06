@@ -219,12 +219,13 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
         fringe += [(x + r * 1.0, hy - r * 0.6), (x, hy - r * 1.1), (x - r * 1.0, hy - r * 0.6)]
         cv.poly(fringe, hair, INK, 5)
     face(cv, x, hy + r * 0.12, r, mood, blink, look, talk, glasses, tear)
-    if mustache:  # two curved lobes above the mouth, tips slightly turned up
-        my = hy + r * 0.58
+    if mustache:  # thin moustache that droops down around the corners of the mouth
+        my = hy + r * 0.6
         for sx in (-1, 1):
-            cv.poly([(x, my - r * 0.04), (x + sx * r * 0.14, my - r * 0.1), (x + sx * r * 0.3, my - r * 0.06),
-                     (x + sx * r * 0.38, my - r * 0.14), (x + sx * r * 0.36, my - r * 0.02), (x + sx * r * 0.22, my + r * 0.04),
-                     (x + sx * r * 0.08, my + r * 0.03)], hair, INK, 4)
+            pts = [(x, my - r * 0.03), (x + sx * r * 0.13, my - r * 0.045), (x + sx * r * 0.23, my),
+                   (x + sx * r * 0.28, my + r * 0.09), (x + sx * r * 0.29, my + r * 0.17)]
+            cv.line(pts, INK, r * 0.085)
+            cv.line(pts, hair, r * 0.05)
     if specs:
         for sx in (-1, 1):
             cv.circle(x + sx * r * 0.38, hy + r * 0.17, r * 0.33, None, INK, 6)
