@@ -54,6 +54,10 @@ Der Nutzer hat bei „Der Zeuge“ nicht verstanden, worum es geht. Deshalb ab s
 - **Ein Info-Chip oben** (z. B. grün „100.000.000 $“, rot „⚠ KEIN HERKUNFTSNACHWEIS“) statt Spiel-HUD.
 - Untertitel weiß mit schwarzer Kontur, Schlagwort **gelb** hervorgehoben.
 - Erzählung bleibt in der Du-Form.
+- **Hauptfigur ab Video 12 (Wunsch 06.11.):** dunkle Haare, neue Frisur, **dunkelgrüner Pullover mit
+  waagerechten hellgrünen Streifen** (Rundhals, kein Hoodie). Im Code immer `character(..., **T.HERO)`
+  verwenden (`tiktok/reich/style3.py`). Frisur-Varianten: `side` (Seitenscheitel, Standard),
+  `quiff` (Tolle), `curly` (Locken) – Vorschau: `tiktok/reich/figur_neu_vorschau.png`.
 
 ## Kanal
 - Name: **Du-Geschichten 🎭** (@du.geschichten), Profilbild: `tiktok/profilbild/profilbild_B_pink.png`

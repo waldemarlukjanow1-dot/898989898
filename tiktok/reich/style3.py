@@ -24,6 +24,9 @@ HOODIE_D = (30, 86, 180)
 PANTS = (24, 26, 40)
 BLUSH = (246, 160, 170)
 YELLOW = (255, 214, 10)
+# Main character look from video 12 on (user request 06.11.): dark hair, new hairstyle,
+# dark-green jumper with horizontal stripes. Use as: character(..., **HERO)
+HERO = dict(hair=(36, 26, 20), hoodie=(28, 84, 52), outfit="sweater", stripe=(70, 140, 92), hair_style="side")
 MONEY = (110, 190, 100)
 MONEY_D = (60, 140, 70)
 
@@ -97,7 +100,7 @@ def face(cv, x, y, r, mood="neutral", blink=False, look=(0, 0), talk=0.0, glasse
 
 def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, talk=0.0, look=(0, 0),
               glasses=False, chain=False, tear=False, bob=0.0, hoodie=HOODIE, hair=HAIR, tie=False,
-              bald=False, mustache=False, specs=False):
+              bald=False, mustache=False, specs=False, hair_style="fringe", outfit="hoodie", stripe=None):
     """Front-view character. s=1 -> about 1000 px tall."""
     r = 150 * s
     y_feet += bob
@@ -113,6 +116,13 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
         ax = x + side * 175 * s
         if kind == "down":
             cv.rect((ax - 44 * s, sh_y + 20 * s, ax + 44 * s, hip_y + 10 * s), hoodie, INK, 6, r=int(40 * s))
+            if outfit == "sweater":
+                st = stripe or tuple(min(255, int(c * 1.55)) for c in hoodie)
+                y = sh_y + 70 * s
+                while y < hip_y - 20 * s:
+                    cv.rect((ax - 38 * s, y, ax + 38 * s, y + 26 * s), st)
+                    y += 70 * s
+                cv.rect((ax - 44 * s, sh_y + 20 * s, ax + 44 * s, hip_y + 10 * s), None, INK, 6, r=int(40 * s))
             cv.circle(ax, hip_y + 30 * s, 42 * s, SKIN, INK, 6)
         elif kind == "up":
             cv.line([(ax, sh_y + 40 * s), (ax + side * 70 * s, sh_y - 230 * s)], INK, 96 * s)
@@ -125,11 +135,22 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
         arm(1, right)
     # torso (hoodie)
     cv.rect((x - 190 * s, sh_y - 10 * s, x + 190 * s, hip_y + 30 * s), hoodie, INK, 7, r=int(90 * s))
-    cv.rect((x - 100 * s, hip_y - 130 * s, x + 100 * s, hip_y - 40 * s), HOODIE_D, INK, 5, r=int(20 * s))
-    cv.d.chord(cv.s((x - 150 * s, sh_y - 70 * s, x + 150 * s, sh_y + 90 * s)), 0, 180, fill=HOODIE_D)  # hood rim
-    for sx in (-1, 1):
-        cv.line([(x + sx * 45 * s, sh_y + 20 * s), (x + sx * 45 * s, sh_y + 130 * s)], WHITE, 7 * s)
-        cv.circle(x + sx * 45 * s, sh_y + 136 * s, 9 * s, WHITE, INK, 2)
+    if outfit == "sweater":  # crew-neck jumper with horizontal stripes and ribbed hem
+        st = stripe or tuple(min(255, int(c * 1.55)) for c in hoodie)
+        y = sh_y + 70 * s
+        while y < hip_y - 10 * s:
+            cv.rect((x - 183 * s, y, x + 183 * s, y + 26 * s), st)
+            y += 70 * s
+        cv.rect((x - 190 * s, sh_y - 10 * s, x + 190 * s, hip_y + 30 * s), None, INK, 7, r=int(90 * s))
+        cv.rect((x - 186 * s, hip_y - 6 * s, x + 186 * s, hip_y + 26 * s), tuple(int(c * 0.8) for c in hoodie), INK, 4, r=int(14 * s))
+        cv.d.chord(cv.s((x - 95 * s, sh_y - 55 * s, x + 95 * s, sh_y + 45 * s)), 0, 180, fill=tuple(int(c * 0.75) for c in hoodie))
+        cv.d.arc(cv.s((x - 95 * s, sh_y - 55 * s, x + 95 * s, sh_y + 45 * s)), 0, 180, fill=INK, width=int(5 * s * 2))
+    else:
+        cv.rect((x - 100 * s, hip_y - 130 * s, x + 100 * s, hip_y - 40 * s), HOODIE_D, INK, 5, r=int(20 * s))
+        cv.d.chord(cv.s((x - 150 * s, sh_y - 70 * s, x + 150 * s, sh_y + 90 * s)), 0, 180, fill=HOODIE_D)  # hood rim
+        for sx in (-1, 1):
+            cv.line([(x + sx * 45 * s, sh_y + 20 * s), (x + sx * 45 * s, sh_y + 130 * s)], WHITE, 7 * s)
+            cv.circle(x + sx * 45 * s, sh_y + 136 * s, 9 * s, WHITE, INK, 2)
     if tie:
         cv.poly([(x - 30 * s, sh_y + 20 * s), (x + 30 * s, sh_y + 20 * s), (x + 40 * s, sh_y + 220 * s), (x, sh_y + 270 * s),
                  (x - 40 * s, sh_y + 220 * s)], (200, 40, 50), INK, 5)
@@ -158,14 +179,43 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
     if bald:  # only a hair ring on the sides
         for sx in (-1, 1):
             cv.ellipse((x + sx * r * 0.62 - r * 0.42, hy - r * 0.55, x + sx * r * 0.62 + r * 0.42, hy + r * 0.2), hair)
+    elif hair_style == "side":  # side part, hair hugs the skull, fringe swept to the right
+        import math as _m
+        top = [(x + _m.cos(_m.radians(a_)) * r * 1.07, hy - r * 0.02 + _m.sin(_m.radians(a_)) * r * 1.07)
+               for a_ in range(185, 356, 6)]
+        low = [(x + r * 1.06, hy - r * 0.05), (x + r * 0.78, hy - r * 0.3), (x + r * 0.35, hy - r * 0.5),
+               (x - r * 0.15, hy - r * 0.52), (x - r * 0.5, hy - r * 0.36), (x - r * 0.8, hy - r * 0.12),
+               (x - r * 1.04, hy + r * 0.12)]
+        cv.poly(top + low, hair, INK, 5)
+        cv.line([(x - r * 0.42, hy - r * 1.0), (x - r * 0.55, hy - r * 0.42)], tuple(min(255, c + 45) for c in hair), 6)
+        cv.line([(x + r * 0.05, hy - r * 0.95), (x + r * 0.35, hy - r * 0.55)], tuple(min(255, c + 30) for c in hair), 5)
+    elif hair_style == "curly":
+        cv.d.chord(cv.s((x - r * 1.04, hy - r * 1.05, x + r * 1.04, hy + r * 0.6)), 180, 360, fill=hair)
+        import math as _m
+        for k in range(11):
+            a_ = _m.radians(195 + k * 15)
+            cx_, cy_ = x + _m.cos(a_) * r * 0.92, hy - r * 0.08 + _m.sin(a_) * r * 0.95
+            cv.circle(cx_, cy_, r * 0.27, hair, INK, 4)
+        for k in range(5):
+            cv.circle(x - r * 0.6 + k * r * 0.3, hy - r * 0.45, r * 0.2, hair)
+    elif hair_style == "quiff":  # short sides, volume swept up at the front
+        import math as _m
+        top = []
+        for a_ in range(185, 356, 5):
+            t_ = (a_ - 185) / 170
+            bump = 0.28 * _m.exp(-((t_ - 0.4) / 0.22) ** 2)
+            top.append((x + _m.cos(_m.radians(a_)) * r * (1.06 + bump), hy - r * 0.02 + _m.sin(_m.radians(a_)) * r * (1.06 + bump)))
+        low = [(x + r * 1.05, hy - r * 0.15), (x + r * 0.7, hy - r * 0.42), (x + r * 0.2, hy - r * 0.55),
+               (x - r * 0.3, hy - r * 0.5), (x - r * 0.75, hy - r * 0.38), (x - r * 1.04, hy - r * 0.1)]
+        cv.poly(top + low, hair, INK, 5)
+        cv.line([(x - r * 0.3, hy - r * 1.1), (x + r * 0.1, hy - r * 0.62)], tuple(min(255, c + 45) for c in hair), 6)
     else:
         cv.d.chord(cv.s((x - r * 1.04, hy - r * 1.08, x + r * 1.04, hy + r * 0.7)), 180, 360, fill=hair)
-    fringe = [(x - r * 1.0, hy - r * 0.2)]
-    for k in range(7):
-        fx = x - r * 0.95 + k * r * 0.32
-        fringe += [(fx + r * 0.16, hy - r * (0.5 if k % 2 else 0.32)), (fx + r * 0.32, hy - r * 0.2)]
-    fringe += [(x + r * 1.0, hy - r * 0.6), (x, hy - r * 1.1), (x - r * 1.0, hy - r * 0.6)]
-    if not bald:
+        fringe = [(x - r * 1.0, hy - r * 0.2)]
+        for k in range(7):
+            fx = x - r * 0.95 + k * r * 0.32
+            fringe += [(fx + r * 0.16, hy - r * (0.5 if k % 2 else 0.32)), (fx + r * 0.32, hy - r * 0.2)]
+        fringe += [(x + r * 1.0, hy - r * 0.6), (x, hy - r * 1.1), (x - r * 1.0, hy - r * 0.6)]
         cv.poly(fringe, hair, INK, 5)
     face(cv, x, hy + r * 0.12, r, mood, blink, look, talk, glasses, tear)
     if mustache:
