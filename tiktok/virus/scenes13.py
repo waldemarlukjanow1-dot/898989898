@@ -1,4 +1,4 @@
-"""Scenes for 'NV-26' (STIL 3, T.HERO). UI centred on x=500."""
+"""Scenes for 'DAS NEUE VIRUS' (STIL 3, T.HERO). UI centred on x=500."""
 import math
 import os
 import random
@@ -65,7 +65,7 @@ def s_news(cv, t, dur):
     sh = 6 * math.sin(t * dur * 50) if t < 0.25 else 0
     phone(cv, "Mitteilungen", sh)
     f = font(34, "Black")
-    items = [("EILMELDUNG", "Neues Virus NV-26 entdeckt"), ("EILMELDUNG", "Fälle verdoppeln sich täglich"),
+    items = [("EILMELDUNG", "Neues Virus entdeckt"), ("EILMELDUNG", "Fälle verdoppeln sich täglich"),
              ("NEWS", "Regierung berät Maßnahmen"), ("NEWS", "Krankenhäuser in Alarmbereitschaft")]
     y = PY0 + 120
     for k, (tag, txt) in enumerate(items):
@@ -113,7 +113,7 @@ def s_mask(cv, t, dur):
     bus(cv)
     for k, x in enumerate((120, 880)):
         T.character(cv, x, 1500, 0.6, "neutral", "down", facemask=True, **EXTRAS[k + 2])
-    on = t > 0.35
+    on = t > 0.25
     hero(cv, CX, FEET, SCALE, "worry", "down" if on else "phone", facemask=on, blink=blink_at(t, dur))
 
 
@@ -163,7 +163,7 @@ def s_letter(cv, t, dur):
     cv.text((UX, 663), "IMPFNACHWEIS ERFORDERLICH", font(40, "Black"), WHITE, "ms")
     labels = ["RESTAURANT", "KINO", "FITNESS"]
     for k, lab in enumerate(labels):
-        icon_box(cv, 170 + k * 230, 760, lab, t > 0.35 + k * 0.12)
+        icon_box(cv, 170 + k * 230, 760, lab, t > (0.4, 0.66, 0.78)[k])
 
 
 def s_boss(cv, t, dur):
@@ -207,7 +207,7 @@ def s_center(cv, t, dur):
     for k in range(6):  # queue
         T.character(cv, 60 + k * 175, 1560 - (k % 2) * 20, 0.48, "neutral", "down", facemask=True, **EXTRAS[k % 5])
     hero(cv, 540, FEET + 40, SCALE * 0.75, "worry", "phone", facemask=True, blink=blink_at(t, dur))
-    if t > 0.65:
+    if t > 0.74:
         cv.rect((620, 640, 980, 760), WHITE, INK, 5, r=24)
         cv.text((800, 690), "Termin in", font(32, "Bold"), INK, "ms")
         cv.text((800, 740), "10 Minuten", font(40, "Black"), RED, "ms")
@@ -217,7 +217,7 @@ def s_question(cv, t, dur):
     T.bedroom(cv, night=False)
     hero(cv, CX, FEET, SCALE, "worry", "head", facemask=True, blink=blink_at(t, dur), look=(0, -1))
     for k, (x, txt) in enumerate(((60, "FREIWILLIG?"), (540, "KEINE WAHL?"))):
-        if t > 0.1 + k * 0.4:
+        if t > (0.1, 0.58)[k]:
             cv.circle(x + 40 + 180, 860, 18, WHITE, INK, 4)
             cv.circle(x + 60 + 160, 800, 26, WHITE, INK, 4)
             cv.rect((x, 480, x + 400, 680), WHITE, INK, 5, r=60)

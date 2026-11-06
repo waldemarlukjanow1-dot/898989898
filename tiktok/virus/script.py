@@ -1,12 +1,12 @@
-"""'NV-26' – neues Virus, Szenario wie 2020/21. STIL 3, Du-Form, T.HERO. Keine medizinischen Behauptungen –
+"""'DAS NEUE VIRUS' – neues Virus, Szenario wie 2020/21. STIL 3, Du-Form, T.HERO. Keine medizinischen Behauptungen –
 nur der Alltag unter Maßnahmen und die Frage an die Zuschauer. chip = (text, kind)."""
 
-TITLE = "NV-26"
+TITLE = "DAS NEUE VIRUS"
 DURATION = 62.0
 
 SEQ = [
-    dict(name="Eilmeldung", vo="Du wachst auf. Dein Handy explodiert. Eilmeldung: ein neues Virus. N V sechsundzwanzig. Es breitet sich schneller aus als alles davor.",
-         hi=["Virus.", "schneller"], chip=("EILMELDUNG: NV-26", "red"),
+    dict(name="Eilmeldung", vo="Du wachst auf. Dein Handy explodiert. Eilmeldung: ein neues Virus. Es breitet sich schneller aus als alles davor.",
+         hi=["Virus.", "schneller"], chip=("EILMELDUNG: NEUES VIRUS", "red"),
          visual="Zimmer am Morgen, Handy groß mit Eilmeldung, Benachrichtigungen stapeln sich."),
     dict(name="Leere Regale", vo="Mittags sind die Supermärkte leer. Nudeln weg. Klopapier weg. Die Leute streiten sich um das letzte Desinfektionsmittel.",
          hi=["leer.", "Klopapier"], chip=("REGALE: LEER", "red"),
@@ -15,7 +15,7 @@ SEQ = [
          hi=["Maskenpflicht."], chip=("MASKENPFLICHT", "white"),
          visual="Bus mit Fahrgästen, alle mit Maske. Du setzt deine Maske auf."),
     dict(name="Ausgangssperre", vo="Eine Woche später: Ausgangssperre ab zweiundzwanzig Uhr. Die Straßen sind leer. Nur Streifenwagen.",
-         hi=["Ausgangssperre", "leer."], chip=("AUSGANGSSPERRE 22:00", "red"),
+         hi=["Ausgangssperre", "22", "leer."], chip=("AUSGANGSSPERRE 22:00", "red"),
          visual="Leere Straße bei Nacht, Uhr 22:00, ein Streifenwagen fährt langsam vorbei."),
     dict(name="Der Brief", vo="Dann kommt der Brief: Impfung. Ohne Nachweis kein Restaurant. Kein Kino. Kein Fitnessstudio.",
          hi=["Impfung.", "Nachweis"], chip=("OHNE NACHWEIS: KEIN ZUTRITT", "red"),
@@ -30,7 +30,7 @@ SEQ = [
          hi=["streitet", "Experte."], chip=("FAMILIE: STREIT", "red"),
          visual="Esstisch, alle reden durcheinander, Sprechblasen mit Ausrufezeichen."),
     dict(name="Impfzentrum", vo="Du stehst vor dem Impfzentrum. Die Schlange ist hundert Meter lang. Dein Handy vibriert: Termin in zehn Minuten.",
-         hi=["Impfzentrum.", "zehn", "Minuten."], chip=("TERMIN: IN 10 MIN", "white"),
+         hi=["Impfzentrum.", "10", "Minuten."], chip=("TERMIN: IN 10 MIN", "white"),
          visual="Gebäude mit Schild IMPFZENTRUM, lange Schlange mit Masken, du stehst mittendrin."),
     dict(name="Die Frage", vo="Und du fragst dich: Mache ich das freiwillig? Oder weil ich keine Wahl habe?",
          hi=["freiwillig?", "Wahl"], chip=("FREIWILLIG?", "white"),
