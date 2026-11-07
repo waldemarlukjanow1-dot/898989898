@@ -44,12 +44,12 @@ def seg(t, a, b):
 # ------------------------------------------------------------------ character
 
 def eye(cv, x, y, r, mood, look=(0, 0), blink=False):
-    if blink or mood == "closed":
+    if blink or mood in ("closed", "sleep"):
         cv.arc((x - r, y - r * 0.6, x + r, y + r * 0.9), 200, 340, INK, 7)
         return
-    rr = r * (1.12 if mood == "shock" else 1.0)
+    rr = r * (1.12 if mood in ("shock", "stare") else 1.0)
     cv.circle(x, y, rr, WHITE, INK, 7)
-    pr = r * (0.32 if mood == "shock" else 0.42)
+    pr = r * (0.32 if mood == "shock" else (0.22 if mood == "stare" else 0.42))
     px, py = x + look[0] * r * 0.3, y + look[1] * r * 0.3
     cv.circle(px, py, pr, INK)
     cv.circle(px - pr * 0.35, py - pr * 0.35, pr * 0.32, WHITE)
