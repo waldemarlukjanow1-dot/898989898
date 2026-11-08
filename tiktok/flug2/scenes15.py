@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 
 import cabin as C
 from cabin import T, Canvas, font, W, H, ease, seg, INK, WHITE, SKIN, YELLOW, UX, RED, SEAT, SEAT_D, CABIN
-from cabin import cabin_back, cabin_rows, seat_front, seat_back, window, hero, blink_at, PASSENGERS
+from cabin import cabin_back, seat_front, seat_back, window, hero, blink_at, PASSENGERS
 from timing import PHRASES, TEMPO, seq_bounds
 
 BOUNDS, TOTAL = seq_bounds()
@@ -14,6 +14,47 @@ BOUNDS, TOTAL = seq_bounds()
 
 def cue(text):
     return next(a / TEMPO for a, b, s, t in PHRASES if t.startswith(text))
+
+
+def cue_end(text):
+    return next(b / TEMPO for a, b, s, t in PHRASES if t.startswith(text))
+
+
+
+# ---- realistic cabin: 3 seats left + aisle + 3 seats right, rows going all the way to the back
+ROWS6 = [0.16, 0.2, 0.25, 0.31, 0.38, 0.47, 0.58, 0.71, 0.86]   # perspective scale, back -> front
+SEAT_COLORS = [(52, 72, 120), (48, 66, 112)]
+
+
+def row_y(s):
+    return 640 + 1000 * s  # seat-cushion line of a row
+
+
+def cabin_rows(cv, mood_fn, ta, night=False, empty=(), talk_seat=None, talk=0.0, skip_front=False):
+    """mood_fn(row, seat) -> mood. seats are 0..5 (0-2 left of the aisle, 3-5 right)."""
+    rows = ROWS6[:-1] if skip_front else ROWS6
+    for ri, s in enumerate(rows):
+        seat_w = 205 * s
+        aisle = 150 * s
+        cy = row_y(s)
+        head_y = cy - 330 * s
+        for k in range(6):
+            side = -1 if k < 3 else 1
+            j = (2 - k) if k < 3 else (k - 3)          # 0 = next to the aisle
+            x = UX + side * (aisle / 2 + seat_w * (j + 0.5))
+            cv.rect((x - seat_w * 0.46, head_y - 120 * s, x + seat_w * 0.46, cy), SEAT_COLORS[(ri + k) % 2], INK, 3,
+                    r=int(seat_w * 0.18))
+            cv.rect((x - seat_w * 0.34, head_y - 110 * s, x + seat_w * 0.34, head_y - 55 * s), WHITE, None, 0, r=int(seat_w * 0.1))
+            if (ri, k) in empty:
+                continue
+            kw = PASSENGERS[(ri * 5 + k * 3) % len(PASSENGERS)]
+            cs = 0.42 * s
+            T.character(cv, x, head_y + 753 * cs, cs, mood_fn(ri, k), "down",
+                        talk=talk if talk_seat == (ri, k) else 0.0, **kw)
+            cv.rect((x - seat_w * 0.5, cy - 40 * s, x + seat_w * 0.5, cy + 30 * s), (40, 56, 96), INK, 3, r=int(8 * s))  # cushion/armrest
+        # armrests between blocks + overhead light row
+        for side in (-1, 1):
+            cv.rect((UX + side * aisle / 2 - 8 * s, cy - 70 * s, UX + side * aisle / 2 + 8 * s, cy + 30 * s), (30, 40, 70))
 
 
 def dark(cv, alpha):
@@ -50,8 +91,8 @@ def s_intro(cv, t, dur, ta):
     cabin_back(cv, ta, night=True)
     cabin_rows(cv, lambda r, k: "stare", ta, night=True)
     cv.overlay((20, 0, 0), 30)
-    if ta < cue("Und hundertsieben"):  # empty cockpit flash on the first line
-        k = 1 - seg(ta, cue("Und hundertsieben") - 0.5, cue("Und hundertsieben"))
+    if ta < cue("Und 187"):  # empty cockpit flash on the first line
+        k = 1 - seg(ta, cue("Und 187") - 0.5, cue("Und 187"))
         layer = Canvas((0, 0, 0))
         layer.rect((0, 0, W, H), (40, 44, 56))
         layer.poly([(80, 470), (920, 470), (980, 760), (20, 760)], (30, 50, 100), INK, 6)
@@ -86,7 +127,7 @@ def s_breathe(cv, t, dur, ta):
 def s_steps(cv, t, dur, ta):
     """A passenger walks down the aisle towards your row and stops right next to you."""
     cabin_back(cv, ta, night=True)
-    cabin_rows(cv, lambda r, k: "stare", ta, night=True)
+    cabin_rows(cv, lambda r, k: "stare", ta, night=True, skip_front=True)
     dark(cv, 110)
     u = ease(seg(ta, cue("Dann hörst"), cue("Und bleiben")))
     s = 0.35 + 0.55 * u
@@ -98,15 +139,18 @@ def s_steps(cv, t, dur, ta):
 
 
 def s_lean(cv, t, dur, ta):
-    k = ease(seg(ta, cue("Jemand beugt"), cue("Du spürst")))
+    k = ease(seg(ta, cue("Jemand beugt"), cue("Du spürst"))) if ta < cue("Du spürst") else 1.0
+
+    whisper = cue("Er schläft") <= ta < cue_end("Er schläft")
 
     def leaner():  # a passenger standing in the aisle bends down to your ear (upper body only, row in front hides the rest)
         x = 900 - 340 * k
         y = 640 + 120 * k
-        T.character(cv, x, y + 753 * 0.8, 0.8, "stare", "down", **PASSENGERS[1])
+        T.character(cv, x, y + 753 * 0.8, 0.8, "stare", "down", talk=abs(math.sin(ta * 11)) if whisper else 0.0,
+                    **PASSENGERS[1])
     pair_seats(cv, ta, "sleep", extra=leaner)
     dark(cv, 80)
-    if ta >= cue("Du spürst"):
+    if cue("Du spürst") <= ta < cue("Eine Stimme"):
         for j in range(3):  # breath lines between his mouth and your ear
             ph = (ta * 1.5 + j / 3) % 1.0
             cv.arc((440 + 20 * ph, 760 + j * 22, 520 + 30 * ph, 820 + j * 22), 120, 240,
@@ -114,7 +158,7 @@ def s_lean(cv, t, dur, ta):
 
 
 def s_whisper(cv, t, dur, ta):
-    s_lean(cv, 1.0, dur, max(ta, cue("Du spürst") + 0.5))
+    s_lean(cv, 1.0, dur, ta)
     if ta >= cue("Er schläft"):
         a = min(1, (ta - cue("Er schläft")) / 0.2)
         cv.rect((480, 470, 900, 610), (20, 20, 26, int(230 * a)), (255, 214, 10), 4, r=26)
@@ -157,9 +201,10 @@ def s_twin(cv, t, dur, ta):
 
 
 def s_takeover(cv, t, dur, ta):
-    talk = abs(math.sin(ta * 9)) if cue("Ich übernehme") <= ta < cue("Ich übernehme") + 1.6 else 0
+    talk = abs(math.sin(ta * 10)) if cue("Ich übernehme") <= ta < cue_end("Ich übernehme") else 0
     pair_seats(cv, ta, "shock", twin=True, twin_mood="smug", twin_talk=talk)
-    if ta >= cue("Ich übernehme"):
+    if cue("Ich übernehme") <= ta:
+        cv.poly([(700, 600), (740, 600), (735, 650)], WHITE, INK, 5)
         cv.rect((500, 470, 920, 600), WHITE, INK, 5, r=30)
         cv.text((710, 553), "Ich übernehme ab hier.", font(34, "Black"), INK, "ms")
 
@@ -195,7 +240,7 @@ def buttons(img):
 
 SCENES = [s_intro, s_decide, s_breathe, s_steps, s_lean, s_whisper, s_pause, s_open_eye, s_twin, s_takeover, s_dive, s_final]
 PAUSE = 6
-INNER_CUTS = [cue("Und hundertsieben"), cue("Dort sitzt")]
+INNER_CUTS = [cue("Und 187"), cue("Dort sitzt")]
 TILT_FROM = cue("Dann ruckelt")
 
 

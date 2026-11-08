@@ -2,7 +2,7 @@
 TITLE = "FLUG 404 – TEIL 2"
 DURATION = 63.0
 SEQ = [
-    dict(name="Ohne Piloten", vo="Du sitzt in einem fliegenden Flugzeug ohne Piloten. Und hundertsiebenundachtzig Passagiere starren dich an.", hi=["Piloten.", "starren"],
+    dict(name="Ohne Piloten", vo="Du sitzt in einem fliegenden Flugzeug ohne Piloten. Und 187 Passagiere starren dich an.", hi=["Piloten.", "starren"],
          chip=("OHNE PILOTEN", "red"), visual="Kurz das leere Cockpit mit AUTOPILOT, dann die starrende Kabine aus Teil 1."),
     dict(name="Schlafen stellen", vo="Du hast dich entschieden: Du setzt dich hin. Schließt die Augen. Und tust so, als würdest du schlafen.", hi=["Augen.", "schlafen."],
          chip=("SCHLAFEN STELLEN", "white"), visual="Du im Sitz, Platz daneben leer. Du schließt die Augen, das Bild wird dunkler."),
