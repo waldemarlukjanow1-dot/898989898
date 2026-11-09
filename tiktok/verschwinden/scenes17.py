@@ -164,11 +164,16 @@ def tv(cv, ta, show_face):
     cv.rect((140, 500, 860, 1030), (40, 60, 110))
     cv.rect((160, 520, 290, 570), RED, r=8)
     cv.text((225, 560), "LIVE", font(34, "Black"), WHITE, "ms")
-    if show_face:  # your photo in the news, with black ribbon
-        cv.rect((310, 560, 690, 900), (230, 230, 236), INK, 5)
-        T.character(cv, UX, 580 + 300 + 753 * 0.42 - 340, 0.42, "neutral", "down", **T.HERO)
-        cv.rect((310, 560, 690, 900), None, INK, 5)
-        cv.poly([(620, 560), (690, 560), (690, 630)], (10, 10, 10))
+    if show_face:  # your portrait, framed like a news photo, with black mourning ribbon
+        fx0, fy0, fx1, fy1 = 330, 560, 670, 860
+        cv.rect((fx0 - 10, fy0 - 10, fx1 + 10, fy1 + 10), WHITE, INK, 4)
+        sub = Canvas((200, 210, 225))
+        T.character(sub, 540, 960 + 753 * 1.6 - 520, 1.6, "neutral", "down", **T.HERO)
+        crop = sub.final().crop((200, 110, 880, 710)).resize(((fx1 - fx0) * T.S.SS, (fy1 - fy0) * T.S.SS))
+        cv.img.paste(crop, (fx0 * T.S.SS, fy0 * T.S.SS))
+        cv.d = ImageDraw.Draw(cv.img, "RGBA")
+        cv.rect((fx0, fy0, fx1, fy1), None, INK, 4)
+        cv.poly([(fx1 - 70, fy0), (fx1, fy0), (fx1, fy0 + 70)], (10, 10, 10))
     cv.rect((140, 920, 860, 1030), RED)
     cv.rect((140, 880, 400, 920), YELLOW)
     cv.text((270, 912), "EILMELDUNG", font(30, "Black"), INK, "ms")
@@ -225,8 +230,13 @@ def s_envelope(cv, t, dur, ta):
         cv.rect((170, 520, 830, 1060), WHITE, INK, 6, r=8)
         cv.rect((200, 550, 800, 960), (130, 180, 220))
         cv.rect((200, 860, 800, 960), (90, 140, 80))
-        for k, kw in enumerate(FAMILY):
-            T.character(cv, 320 + k * 180, 950, 0.32 - 0.04 * (k == 2), "happy", "down", **kw)
+        WIFE = dict(hoodie=(200, 110, 130), hair=(110, 70, 50), outfit="hoodie", hair_style="curly")
+        KID1 = dict(hoodie=(80, 140, 200), hair=(60, 40, 30), outfit="hoodie", hair_style="fringe")
+        KID2 = dict(hoodie=(240, 190, 70), hair=(140, 90, 50), outfit="hoodie", hair_style="curly")
+        T.character(cv, 300, 955, 0.36, "happy", "down", **T.HERO)        # you
+        T.character(cv, 450, 955, 0.33, "happy", "down", **WIFE)          # wife
+        T.character(cv, 590, 955, 0.24, "happy", "down", **KID1)          # child 1
+        T.character(cv, 710, 955, 0.2, "happy", "down", **KID2)           # child 2
         cv.text((780, 1035), "HEUTE · 07:12", mono(28), RED, "rs")
     else:
         cv.rect((170, 520, 830, 1060), (245, 242, 232), INK, 6, r=8)
@@ -250,7 +260,7 @@ def s_target(cv, t, dur, ta):
     hotel_room(cv, lamp=False)
     cv.overlay((10, 10, 20), 90)
     phone(cv, "Nachricht", dark=True)
-    if ta >= cue("Zielperson") - 0.1:
+    if ta >= cue("Zielperson gefunden") - 0.1:
         cv.rect((PX0 + 30, PY0 + 140, PX1 - 30, PY0 + 290), (60, 60, 70), None, 0, r=26)
         cv.text((UX, PY0 + 235), "Zielperson gefunden.", font(46, "Black"), (255, 120, 120), "ms")
         cv.circle(UX, PY0 + 480, 120, None, RED, 6)
@@ -264,9 +274,9 @@ def s_driver(cv, t, dur, ta):
     cv.rect((650, 410, 650 + 320 * (1 - k), 1150), (110, 76, 54), INK, 5)  # door swings open
     cv.glow(810, 780, 320 * k + 1, (255, 240, 200), int(120 * k))
     if ta >= cue("Es ist der"):
-        T.character(cv, 810, 1200, 0.62, "neutral", "down", talk=talking(ta, "Die vierundzwanzig"), **DRIVER)
+        T.character(cv, 810, 1200, 0.62, "neutral", "down", talk=talking(ta, "Die 24"), **DRIVER)
     hero(cv, 300, 1720, 0.95, "shock", "down", look=(1, 0))
-    if ta >= cue("Die vierundzwanzig"):
+    if ta >= cue("Die 24"):
         cv.rect((520, 470, 960, 610), WHITE, INK, 5, r=30)
         cv.poly([(780, 610), (820, 610), (805, 660)], WHITE, INK, 5)
         cv.text((740, 528), "Die 24 Stunden", font(38, "Black"), INK, "ms")
@@ -284,7 +294,7 @@ def s_final(cv, t, dur, ta):
 def buttons(img):
     d = ImageDraw.Draw(img, "RGBA")
     f = T.font(48, "Black")
-    for (x0, x1), lab, bg, fg in (((60, 470), "VERSTECKEN", WHITE, INK), ((510, 920), "FLIEHEN", RED, WHITE)):
+    for (x0, x1), lab, bg, fg in (((60, 470), "ANGREIFEN", WHITE, INK), ((510, 920), "FLIEHEN", RED, WHITE)):
         d.rounded_rectangle((x0, 1330, x1, 1440), 28, fill=bg, outline=INK, width=6)
         d.text(((x0 + x1) / 2, 1405), lab, font=f, fill=fg, anchor="ms")
 
@@ -321,4 +331,4 @@ def chip_for(i, ta):
     return [("ANGEBOT: 20.000.000 €", "green"), ("DU SAGST JA", "white"), ("IDENTITÄT: GELÖSCHT", "red"),
             ("OFFIZIELL: TOT", "red"), ("+ 5.000.000 €", "green"), ("", "white"), ("UNBEKANNTER ANRUF", "red"),
             ("VON HEUTE MORGEN", "red"), ("NIEMAND KENNT DAS HOTEL", "red"), ("ZIELPERSON: DU", "red"),
-            ("00:00 – ZEIT UM", "red"), ("VERSTECKEN ODER FLIEHEN?", "yellow")][i]
+            ("00:00 – ZEIT UM", "red"), ("ANGREIFEN ODER FLIEHEN?", "yellow")][i]

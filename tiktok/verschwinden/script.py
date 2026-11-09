@@ -4,7 +4,7 @@ DURATION = 63.0
 _V = [p.strip() for p in open(__file__.replace("script.py", "vo.txt"), encoding="utf-8").read().strip().split("\n\n")]
 _META = [
     ("Das Angebot", ["Zwanzig", "Millionen", "verschwinden."], "Handy: 20.000.000 € für 24 Stunden verschwinden – KEINE FRAGEN / KEINE POLIZEI / KEINE FAMILIE."),
-    ("Der SUV", ["ja.", "SUV"], "Du nickst. Nachts fährt ein schwarzer SUV mit Scheinwerfern vor dir vor."),
+    ("Der Geländewagen", ["ja.", "Geländewagen"], "Du nickst. Nachts fährt ein schwarzer Geländewagen mit Scheinwerfern vor dir vor."),
     ("Gelöscht", ["zerstört.", "gelöscht.", "nicht"], "KRACH – Handy zersplittert. Register: Eintrag für Eintrag GELÖSCHT → PERSON NICHT GEFUNDEN."),
     ("Eilmeldung", ["tot", "Foto.", "Name."], "Fernseher: EILMELDUNG – UNTERNEHMER TOT AUFGEFUNDEN, dann erscheint dein Foto mit Trauerflor."),
     ("Erste Zahlung", ["fünf", "Millionen."], "Neues Konto zählt hoch auf 5.000.000 € – Zahlung 1 von 4."),
@@ -14,10 +14,10 @@ _META = [
     ("Der Schlüssel", ["Schlüssel", "Niemand"], "Der Türgriff dreht sich, klick, Licht unter der Tür."),
     ("Zielperson", ["Zielperson"], "Dein neues Handy: „Zielperson gefunden.“ mit Fadenkreuz."),
     ("Der Fahrer", ["Fahrer", "um."], "Die Tür geht auf: der Fahrer vom SUV mit Sonnenbrille. Er sagt: „Die 24 Stunden sind um.“"),
-    ("Cliffhanger", ["Verstecken", "fliehen?"], "Du und der Fahrer. Buttons: VERSTECKEN / FLIEHEN."),
+    ("Cliffhanger", ["Angreifen", "fliehen?"], "Du und der Fahrer. Buttons: ANGREIFEN / FLIEHEN."),
 ]
 SEQ = [dict(name=n, vo=v, hi=hi, chip=("", "white"), visual=vis) for (n, hi, vis), v in zip(_META, _V)]
-CAPTION_TEXT = ("20 Millionen, um 24 Stunden zu verschwinden … am nächsten Morgen bist du offiziell tot. 💰🕶️ Verstecken oder fliehen? 👇 "
+CAPTION_TEXT = ("20 Millionen, um 24 Stunden zu verschwinden … am nächsten Morgen bist du offiziell tot. 💰🕶️ Angreifen oder fliehen? 👇 "
                 "#mystery #thriller #20millionen #storytime #duform #geschichte #plottwist #spannung #fürdich #fyp")
 from timing import seq_bounds as _sb  # noqa: E402
 for _s, (_a, _b) in zip(SEQ, _sb()[0]):

@@ -1,56 +1,57 @@
-"""Phrase timings for '24 Stunden verschwinden' (PLANNED timing – replaced when the voice arrives).
+"""Phrase timings for '24 Stunden verschwinden' (ElevenLabs take, 72.6 s).
 
 The take is long, so pauses are tightened first (each phrase is cut out and re-placed with
 short gaps), then the result is sped up by TEMPO. All public times are video times.
 """
 
-TEMPO = 1.0
+TEMPO = 1.12
 VOICE = "audio/voice_helmut.mp3"
 PAD_IN, PAD_OUT = 0.06, 0.10
 GAP_SAME, GAP_SCENE = 0.22, 0.38
 
 # (start, end, sequence index, text) in the ORIGINAL recording
 RAW = [
-    (0.00, 1.15, 0, "Zwanzig Millionen Euro."),
-    (1.45, 4.15, 0, "Dafür musst du nur vierundzwanzig Stunden verschwinden."),
-    (4.45, 5.22, 0, "Keine Fragen."),
-    (5.52, 6.28, 0, "Keine Polizei."),
-    (6.58, 7.35, 0, "Keine Familie."),
-    (7.85, 9.01, 1, "Du sagst ja."),
-    (9.31, 13.15, 1, "In derselben Nacht hält ein schwarzer SUV vor deiner Tür."),
-    (13.65, 15.19, 2, "Dein Handy wird zerstört."),
-    (15.49, 17.80, 2, "Dein Name aus jeder Datenbank gelöscht."),
-    (18.10, 20.41, 2, "Offiziell gibt es dich nicht mehr."),
-    (20.91, 22.06, 3, "Am nächsten Morgen:"),
-    (22.36, 22.86, 3, "Eilmeldung."),
-    (23.16, 24.32, 3, "Unternehmer tot aufgefunden."),
-    (24.62, 25.38, 3, "Dein Foto."),
-    (25.68, 26.45, 3, "Dein Name."),
-    (26.95, 28.49, 4, "Auf deinem neuen Konto:"),
-    (28.79, 29.56, 4, "fünf Millionen."),
-    (29.86, 31.02, 4, "Die erste Zahlung."),
-    (31.52, 32.02, 5, "Stopp."),
-    (32.32, 35.39, 5, "Wer zahlt so viel für einen toten Mann?"),
-    (35.89, 37.82, 6, "Im Hotelzimmer klingelt das Telefon."),
-    (38.12, 39.27, 6, "Eine Stimme flüstert:"),
-    (39.57, 42.65, 6, "Du hast vergessen, wem du das Geld schuldest."),
-    (43.15, 45.45, 7, "Auf dem Bett liegt ein Umschlag."),
-    (45.75, 47.29, 7, "Ein Foto deiner Familie."),
-    (47.59, 48.75, 7, "Von heute Morgen."),
-    (49.05, 50.20, 7, "Auf der Rückseite:"),
-    (50.50, 51.27, 7, "Bleib tot."),
-    (51.77, 54.46, 8, "Dann hörst du einen Schlüssel im Schloss."),
-    (54.76, 57.45, 8, "Niemand weiß, in welchem Hotel du bist."),
-    (57.95, 59.49, 9, "Dein neues Handy leuchtet:"),
-    (59.79, 60.56, 9, "Zielperson gefunden."),
-    (61.06, 62.60, 10, "Die Tür geht auf."),
-    (62.90, 65.21, 10, "Es ist der Fahrer vom SUV."),
-    (65.51, 66.66, 10, "Er sagt nur:"),
-    (66.96, 68.88, 10, "Die vierundzwanzig Stunden sind um."),
-    (69.38, 70.54, 11, "Verstecken oder fliehen?"),
-    (70.84, 72.76, 11, "Schreib es in die Kommentare."),
+    (0.00, 1.99, 0, "Zwanzig Millionen Euro."),
+    (2.51, 5.24, 0, "Dafür musst du nur 24 Stunden verschwinden."),
+    (5.73, 6.47, 0, "Keine Fragen."),
+    (6.81, 7.71, 0, "Keine Polizei."),
+    (8.01, 8.99, 0, "Keine Familie."),
+    (9.55, 10.48, 1, "Du sagst ja."),
+    (11.13, 14.63, 1, "In derselben Nacht hält ein schwarzer Geländewagen vor deiner Tür."),
+    (15.04, 16.45, 2, "Dein Handy wird zerstört."),
+    (16.78, 19.23, 2, "Dein Name aus jeder Datenbank gelöscht."),
+    (19.63, 20.28, 2, "Offiziell"),
+    (20.59, 21.69, 2, "gibt es dich nicht mehr."),
+    (22.33, 23.26, 3, "Am nächsten Morgen:"),
+    (23.60, 24.29, 3, "Eilmeldung."),
+    (24.54, 26.20, 3, "Unternehmer tot aufgefunden."),
+    (26.59, 27.33, 3, "Dein Foto."),
+    (27.66, 28.38, 3, "Dein Name."),
+    (28.89, 30.16, 4, "Auf deinem neuen Konto:"),
+    (30.35, 31.48, 4, "fünf Millionen."),
+    (31.68, 32.91, 4, "Die erste Zahlung."),
+    (33.48, 33.95, 5, "Stopp."),
+    (34.45, 36.92, 5, "Wer zahlt so viel für einen toten Mann?"),
+    (37.54, 39.60, 6, "Im Hotelzimmer klingelt das Telefon."),
+    (40.06, 41.15, 6, "Eine Stimme flüstert:"),
+    (41.58, 43.99, 6, "Du hast vergessen, wem du das Geld schuldest."),
+    (44.57, 46.32, 7, "Auf dem Bett liegt ein Umschlag."),
+    (46.71, 48.19, 7, "Ein Foto deiner Familie."),
+    (48.56, 49.42, 7, "Von heute Morgen."),
+    (49.90, 50.86, 7, "Auf der Rückseite:"),
+    (51.29, 52.21, 7, "Bleib tot."),
+    (52.79, 54.76, 8, "Dann hörst du einen Schlüssel im Schloss."),
+    (55.28, 57.48, 8, "Niemand weiß, in welchem Hotel du bist."),
+    (57.90, 59.32, 9, "Dein neues Handy leuchtet:"),
+    (59.67, 61.08, 9, "Zielperson gefunden."),
+    (61.65, 62.66, 10, "Die Tür geht auf."),
+    (63.05, 65.10, 10, "Es ist der Fahrer vom SUV."),
+    (65.52, 66.24, 10, "Er sagt nur:"),
+    (66.65, 68.52, 10, "Die 24 Stunden sind um."),
+    (69.22, 70.63, 11, "Angreifen oder fliehen?"),
+    (71.08, 72.39, 11, "Schreib es in die Kommentare."),
 ]
-EXTRA_GAP = {}  # dramatic beats kept a bit longer
+EXTRA_GAP = {"Bleib tot.": 0.2, "Die 24 Stunden sind um.": 0.2}  # dramatic beats kept a bit longer
 
 END_HOLD = 1.0
 
