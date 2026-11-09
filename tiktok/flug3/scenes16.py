@@ -143,7 +143,7 @@ def s_hook(cv, t, dur, ta):
 def s_run(cv, t, dur, ta):
     cabin_back(cv, ta, night=True)
     turned = ta >= cue("Die Passagiere") + 0.3
-    u = seg(ta, cue("Du rennst"), cue_end("Alle gleichzeitig") + 0.4)
+    u = seg(ta, cue("Du rennst"), cue_end("Die Passagiere") + 0.4)
 
     def look(r, k):
         if not turned:
@@ -165,7 +165,7 @@ def s_cockpit(cv, t, dur, ta):
 
 
 def s_yoke(cv, t, dur, ta):
-    pull = ease(seg(ta, cue("Und ziehst"), cue_end("Mit aller Kraft")))
+    pull = ease(seg(ta, cue("Und ziehst"), cue_end("Und ziehst")))
     mood = "worry" if ta < cue("Aber du packst") else ("angry" if ta >= cue("Und ziehst") else "shock")
     pilot_seat_you(cv, ta, mood, pull)
 
@@ -257,7 +257,7 @@ def render(i, t=0.5, dur=5.0, ta=None):
     if i == 0 and ta >= cue("Und du bist"):
         img = tilt(img, -9, 0.12)
     if i == 3:  # nose comes up: the picture rotates back while you pull
-        deg = 10 * (1 - ease(seg(ta, cue("Und ziehst"), cue_end("Mit aller Kraft") + 0.5)))
+        deg = 10 * (1 - ease(seg(ta, cue("Und ziehst"), cue_end("Und ziehst") + 0.5)))
         img = tilt(img, deg, 0.1)
     if i == 7 and cue("Du landest") <= ta < cue("Du landest") + 0.5:  # touchdown jolt
         img = tilt(img, 2.5 * math.sin((ta - cue("Du landest")) * 40), 0.05)

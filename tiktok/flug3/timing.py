@@ -1,55 +1,55 @@
-"""Phrase timings for 'Flug 404 Teil 3' (PLANNED timing – replaced when the voice arrives).
+"""Phrase timings for 'Flug 404 Teil 3' (ElevenLabs take, 68.8 s).
 
 The take is long, so pauses are tightened first (each phrase is cut out and re-placed with
 short gaps), then the result is sped up by TEMPO. All public times are video times.
 """
 
-TEMPO = 1.0
+TEMPO = 1.1
 VOICE = "audio/voice_helmut.mp3"
 PAD_IN, PAD_OUT = 0.06, 0.10
-GAP_SAME, GAP_SCENE = 0.32, 0.5
+GAP_SAME, GAP_SCENE = 0.22, 0.38
 
 # (start, end, sequence index, text) in the ORIGINAL recording
 RAW = [
-    (0.00, 4.00, 0, "Noch neunzig Sekunden, dann kracht dieses Flugzeug in den Boden."),
-    (4.35, 7.95, 0, "Und du bist der Einzige, der es verhindern kann."),
-    (8.50, 9.30, 1, "Du rennst."),
-    (9.65, 10.85, 1, "Durch den Gang."),
-    (11.20, 13.20, 1, "Die Passagiere drehen ihre Köpfe."),
-    (13.55, 14.35, 1, "Alle gleichzeitig."),
-    (14.90, 17.30, 2, "Die Cockpittür knallt hinter dir zu."),
-    (17.65, 18.85, 2, "Zwei leere Sitze."),
-    (19.20, 20.40, 2, "Rote Lampen überall."),
-    (20.75, 21.95, 2, "Ein Alarm schreit:"),
-    (22.30, 23.10, 2, "Pull up."),
-    (23.45, 24.25, 2, "Pull up."),
-    (24.80, 26.80, 3, "Du bist noch nie geflogen."),
-    (27.15, 29.15, 3, "Aber du packst das Steuer."),
-    (29.50, 30.30, 3, "Und ziehst."),
-    (30.65, 31.85, 3, "Mit aller Kraft."),
-    (32.40, 34.00, 4, "Die Nase hebt sich."),
-    (34.35, 34.85, 4, "Langsam."),
-    (35.20, 37.60, 4, "Der Höhenmesser stoppt bei dreihundert Metern."),
-    (38.15, 38.65, 5, "Stopp."),
-    (39.00, 41.40, 5, "Wer hat eigentlich den Autopiloten ausgeschaltet?"),
-    (41.95, 43.95, 6, "Durchs Fenster siehst du Lichter."),
-    (44.30, 45.10, 6, "Eine Landebahn."),
-    (45.45, 47.05, 6, "Mitten in der Nacht."),
-    (47.40, 48.60, 6, "Mitten im Nirgendwo."),
-    (49.15, 49.95, 7, "Du landest."),
-    (50.30, 50.80, 7, "Hart."),
-    (51.15, 52.35, 7, "Die Reifen kreischen."),
-    (52.70, 55.90, 7, "Alles fühlt sich an wie in einem Traum."),
-    (56.45, 58.05, 8, "Du drehst dich um."),
-    (58.40, 60.00, 8, "Die Kabine ist leer."),
-    (60.35, 62.35, 8, "Alle hundertsiebenundachtzig Passagiere sind weg."),
-    (62.90, 66.10, 9, "Nur einer sitzt noch auf Platz zweiunddreißig B."),
-    (66.45, 66.95, 9, "Du."),
-    (67.30, 68.50, 9, "Und er klatscht."),
-    (69.05, 74.25, 10, "Hast du das Flugzeug gerettet – oder genau das getan, was sie wollten?"),
-    (74.60, 76.60, 10, "Schreib es in die Kommentare."),
+    (0.00, 1.55, 0, "Noch neunzig Sekunden,"),
+    (1.86, 4.07, 0, "dann kracht dieses Flugzeug in den Boden."),
+    (4.52, 7.23, 0, "Und du bist der Einzige, der es verhindern kann."),
+    (7.89, 8.52, 1, "Du rennst."),
+    (8.83, 9.54, 1, "Durch den Gang."),
+    (9.90, 12.96, 1, "Die Passagiere drehen ihre Köpfe. Alle gleichzeitig."),
+    (13.38, 15.44, 2, "Die Cockpittür knallt hinter dir zu."),
+    (15.84, 16.99, 2, "Zwei leere Sitze."),
+    (17.36, 18.86, 2, "Rote Lampen überall."),
+    (19.20, 20.14, 2, "Ein Alarm schreit:"),
+    (20.43, 20.96, 2, "Pull up."),
+    (21.18, 21.75, 2, "Pull up."),
+    (22.33, 23.51, 3, "Du bist noch nie geflogen."),
+    (23.91, 25.17, 3, "Aber du packst das Steuer."),
+    (25.42, 27.58, 3, "Und ziehst. Mit aller Kraft."),
+    (28.00, 29.19, 4, "Die Nase hebt sich."),
+    (29.47, 30.08, 4, "Langsam."),
+    (30.58, 32.96, 4, "Der Höhenmesser stoppt bei 300 Metern."),
+    (33.37, 33.82, 5, "Stopp."),
+    (34.32, 36.69, 5, "Wer hat eigentlich den Autopiloten ausgeschaltet?"),
+    (37.23, 38.89, 6, "Durchs Fenster siehst du Lichter."),
+    (39.26, 40.08, 6, "Eine Landebahn."),
+    (40.46, 41.55, 6, "Mitten in der Nacht."),
+    (41.85, 43.34, 6, "Mitten im Nirgendwo."),
+    (43.86, 44.59, 7, "Du landest."),
+    (44.85, 45.26, 7, "Hart."),
+    (45.61, 46.80, 7, "Die Reifen kreischen."),
+    (47.18, 49.23, 7, "Alles fühlt sich an wie in einem Traum."),
+    (49.77, 50.63, 8, "Du drehst dich um."),
+    (51.12, 52.53, 8, "Die Kabine ist leer."),
+    (52.97, 55.88, 8, "Alle 187 Passagiere sind weg."),
+    (56.30, 59.32, 9, "Nur einer sitzt noch auf Platz 32B."),
+    (59.66, 60.09, 9, "Du."),
+    (60.47, 61.76, 9, "Und er klatscht."),
+    (62.41, 64.25, 10, "Hast du das Flugzeug gerettet –"),
+    (64.57, 66.87, 10, "oder genau das getan, was sie wollten?"),
+    (67.28, 68.60, 10, "Schreib es in die Kommentare."),
 ]
-EXTRA_GAP = {}  # dramatic beats kept a bit longer
+EXTRA_GAP = {"Du.": 0.2, "Alles fühlt sich an wie in einem Traum.": 0.2}  # dramatic beats kept a bit longer
 
 END_HOLD = 1.0
 
