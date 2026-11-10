@@ -18,7 +18,7 @@ Und denk mal nach: Solange er spielt, weißt du genau, wo er ist. Auf dem Sofa. 
 
 Er schreibt keiner anderen Frau. Er fährt nur durch Vice City.
 
-Stopp. Klingt fair, oder?
+Stopp. Jetzt sei mal ehrlich. Das klingt doch fair, oder nicht?
 
 Sein Angebot: Am Wochenende spielt er. Unter der Woche kocht er. Und das Essen mit deinen Eltern? Schon zugesagt.
 
@@ -30,5 +30,6 @@ Also: Darf er GTA sechs spielen? Schreib Ja oder Nein in die Kommentare. Und mar
 ## Anhören – darauf achten
 - Erster Satz ernst und feierlich – wie ein Trailer
 - „Länger, als ihr euch kennt.“ mit kleiner Pause davor
+- „Stopp. Jetzt sei mal ehrlich.“ langsamer, direkt an sie gerichtet
 - „Er fährt nur durch Vice City.“ trocken, mit Augenzwinkern
 - „Und markier deinen Freund.“ deutlich am Ende
