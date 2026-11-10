@@ -8,7 +8,7 @@ _META = [
     ("Seine Wünsche", ["Paris.", "Schuhe.", "Controller."], "PARIS und SCHUHE durchgestrichen, daneben nur ein Controller: NUR DAS."),
     ("Sofa", ["wo", "Sofa.", "dir."], "Beide auf dem Sofa vor dem Fernseher, Standort: Sofa, Herz."),
     ("Keine andere", ["keiner", "anderen", "Vice", "City."], "Handy: Keine neuen Nachrichten – 0. Unten fährt nur ein kleines Auto durchs Spiel."),
-    ("PAUSE", ["fair,"], "Freeze mit Pausen-Symbol."),
+    ("PAUSE", ["ehrlich.", "fair,"], "Freeze mit Pausen-Symbol."),
     ("Vertrag", ["Wochenende", "kocht", "zugesagt."], "Vertrag mit drei Häkchen: Wochenende spielen, Mo–Fr kochen, Essen bei deinen Eltern."),
     ("Player 2", ["zweiten", "Controller."], "Er reicht ihr den pinken zweiten Controller, Herzen steigen auf."),
     ("Abstimmung", ["Ja", "Nein", "markier"], "Er mit Hundeblick, @dein.freund, Buttons JA / NEIN."),

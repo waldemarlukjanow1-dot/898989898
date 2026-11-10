@@ -1,4 +1,4 @@
-"""Phrase timings for 'GTA 6 – Freundin' (PLANNED timing – replaced when the voice arrives).
+"""Phrase timings for 'GTA 6 – Freundin' (ElevenLabs take, 52.3 s).
 
 The take is long, so pauses are tightened first (each phrase is cut out and re-placed with
 short gaps), then the result is sped up by TEMPO. All public times are video times.
@@ -7,39 +7,40 @@ short gaps), then the result is sped up by TEMPO. All public times are video tim
 TEMPO = 1.0
 VOICE = "audio/voice_helmut.mp3"
 PAD_IN, PAD_OUT = 0.06, 0.10
-GAP_SAME, GAP_SCENE = 0.22, 0.38
+GAP_SAME, GAP_SCENE = 0.3, 0.45
 
 # (start, end, sequence index, text) in the ORIGINAL recording
 RAW = [
-    (0.00, 3.08, 0, "Wenn dein Freund dir dieses Video geschickt hat:"),
-    (3.38, 4.15, 0, "Bleib dran."),
-    (4.45, 6.75, 0, "Er hat sich das gut überlegt."),
-    (7.25, 8.41, 1, "GTA sechs kommt."),
-    (8.71, 11.40, 1, "Er wartet seit über zehn Jahren darauf."),
-    (11.70, 13.62, 1, "Länger, als ihr euch kennt."),
-    (14.12, 16.43, 2, "Er will kein Wochenende in Paris."),
-    (16.73, 17.88, 2, "Keine neuen Schuhe."),
-    (18.18, 20.88, 2, "Nur ein paar Abende mit einem Controller."),
-    (21.38, 22.92, 3, "Und denk mal nach:"),
-    (23.22, 26.68, 3, "Solange er spielt, weißt du genau, wo er ist."),
-    (26.98, 28.13, 3, "Auf dem Sofa."),
-    (28.43, 29.20, 3, "Neben dir."),
-    (29.70, 31.62, 4, "Er schreibt keiner anderen Frau."),
-    (31.92, 34.23, 4, "Er fährt nur durch Vice City."),
-    (34.73, 35.23, 5, "Stopp."),
-    (35.53, 36.68, 5, "Klingt fair, oder?"),
-    (37.18, 37.95, 6, "Sein Angebot:"),
-    (38.25, 39.79, 6, "Am Wochenende spielt er."),
-    (40.09, 42.02, 6, "Unter der Woche kocht er."),
-    (42.32, 44.62, 6, "Und das Essen mit deinen Eltern?"),
-    (44.92, 45.69, 6, "Schon zugesagt."),
-    (46.19, 49.65, 7, "Und wenn du willst, bekommst du den zweiten Controller."),
-    (50.15, 50.65, 8, "Also:"),
-    (50.95, 52.88, 8, "Darf er GTA sechs spielen?"),
-    (53.18, 55.87, 8, "Schreib Ja oder Nein in die Kommentare."),
-    (56.17, 57.71, 8, "Und markier deinen Freund."),
+    (0.00, 2.60, 0, "Wenn dein Freund dir dieses Video geschickt hat:"),
+    (2.96, 3.65, 0, "Bleib dran."),
+    (4.03, 5.59, 0, "Er hat sich das gut überlegt."),
+    (5.99, 7.66, 1, "GTA 6 kommt."),
+    (8.07, 10.47, 1, "Er wartet seit über zehn Jahren darauf."),
+    (10.73, 12.00, 1, "Länger, als ihr euch kennt."),
+    (12.45, 14.49, 2, "Er will kein Wochenende in Paris."),
+    (14.65, 15.75, 2, "Keine neuen Schuhe."),
+    (16.03, 18.43, 2, "Nur ein paar Abende mit einem Controller."),
+    (18.88, 19.74, 3, "Und denk mal nach:"),
+    (20.12, 22.85, 3, "Solange er spielt, weißt du genau, wo er ist."),
+    (23.26, 24.16, 3, "Auf dem Sofa."),
+    (24.50, 25.14, 3, "Neben dir."),
+    (25.60, 27.34, 4, "Er schreibt keiner anderen Frau."),
+    (27.66, 29.51, 4, "Er fährt nur durch Vice City."),
+    (30.08, 30.42, 5, "Stopp."),
+    (30.88, 31.93, 5, "Jetzt sei mal ehrlich."),
+    (32.24, 33.83, 5, "Das klingt doch fair, oder nicht?"),
+    (34.32, 35.22, 6, "Sein Angebot:"),
+    (35.59, 36.96, 6, "Am Wochenende spielt er."),
+    (37.27, 38.64, 6, "Unter der Woche kocht er."),
+    (39.05, 40.45, 6, "Und das Essen mit deinen Eltern?"),
+    (40.74, 41.64, 6, "Schon zugesagt."),
+    (42.01, 44.69, 7, "Und wenn du willst, bekommst du den zweiten Controller."),
+    (45.11, 45.52, 8, "Also:"),
+    (45.86, 47.63, 8, "Darf er GTA 6 spielen?"),
+    (47.98, 50.30, 8, "Schreib Ja oder Nein in die Kommentare."),
+    (50.53, 52.04, 8, "Und markier deinen Freund."),
 ]
-EXTRA_GAP = {}  # dramatic beats kept a bit longer
+EXTRA_GAP = {"Jetzt sei mal ehrlich.": 0.2, "Schon zugesagt.": 0.15}  # dramatic beats kept a bit longer
 
 END_HOLD = 1.0
 

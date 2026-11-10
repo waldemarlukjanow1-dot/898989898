@@ -63,7 +63,7 @@ def living_room(cv):
         hgt = 120 + (k * 53) % 140
         cv.rect((x, 795 - hgt, x + 90, 795), (40, 20, 70))
         cv.rect((x + 15, 795 - hgt + 20, x + 75, 795 - hgt + 34), (255, 70, 170) if k % 2 else (60, 230, 255))
-    cv.circle(760, 520, 40, (255, 120, 180, 160))
+    paste_logo(cv, 770, 560, 170, radius=14)
     cv.rect((440, 820, 640, 860), (24, 24, 30))
     cv.rect((40, 1180, 1040, 1420), (90, 120, 180), INK, 6, r=40)          # sofa
     cv.rect((40, 1080, 1040, 1200), (100, 132, 196), INK, 6, r=40)
@@ -73,6 +73,34 @@ def sofa_front(cv):
     """Seat cushions + front of the sofa drawn over the legs, so people sit instead of stand."""
     cv.rect((40, 1170, 1040, 1250), (110, 142, 206), INK, 6, r=30)
     cv.rect((40, 1240, 1040, 1440), (90, 120, 180), INK, 6, r=30)
+
+
+_LOGO = None
+
+
+def logo_img():
+    global _LOGO
+    if _LOGO is None:
+        _LOGO = Image.open(os.path.join(HERE, "assets", "logo_gta6.jpg")).convert("RGB")
+    return _LOGO
+
+
+def paste_logo(cv, cx, cy, w, k=1.0, radius=40):
+    """Paste the supplied GTA VI logo centred at (cx, cy), width w, with rounded corners; k = pop-in 0..1."""
+    if k <= 0:
+        return
+    lg = logo_img()
+    sc = 0.7 + 0.3 * ease(k)
+    ww = int(w * sc * T.S.SS)
+    hh = int(ww * lg.height / lg.width)
+    im = lg.resize((ww, hh), Image.LANCZOS)
+    mask = Image.new("L", (ww, hh), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, ww - 1, hh - 1), radius * T.S.SS, fill=int(255 * min(1, k * 1.5)))
+    x0, y0 = int(cx * T.S.SS - ww / 2), int(cy * T.S.SS - hh / 2)
+    cv.d.rounded_rectangle((x0 - 10 * T.S.SS, y0 - 10 * T.S.SS, x0 + ww + 10 * T.S.SS, y0 + hh + 10 * T.S.SS),
+                           (radius + 8) * T.S.SS, fill=(255, 255, 255, int(255 * min(1, k * 1.5))))
+    cv.img.paste(im, (x0, y0), mask)
+    cv.d = ImageDraw.Draw(cv.img, "RGBA")
 
 
 def phone(cv, title=None):
@@ -86,6 +114,13 @@ def phone(cv, title=None):
 # ------------------------------------------------------------------ scenes (cv, t, dur, ta)
 
 def s_hook(cv, t, dur, ta):
+    if ta < cue("Bleib dran"):  # first words: show right away what this is about
+        cv.rect((0, 0, W, H), (232, 90, 160))
+        for k in range(14):
+            cv.line([(0, 200 + k * 130), (W, 80 + k * 130)], (240, 120, 180), 30)
+        paste_logo(cv, UX, 800, 620, k=seg(ta, 0.0, 0.35) * 3)
+        girl(cv, 880, 1760, 0.55, "shock", "down")
+        return
     T.bedroom(cv, night=False)
     girl(cv, 760, 1720, 0.95, "neutral" if ta < cue("Bleib dran") else "smug", "phone", blink=blink_at(ta))
     phone(cv, "Schatz")
@@ -97,6 +132,12 @@ def s_hook(cv, t, dur, ta):
 
 
 def s_years(cv, t, dur, ta):
+    if ta < cue("Er wartet"):
+        cv.rect((0, 0, W, H), (232, 90, 160))
+        paste_logo(cv, UX, 790, 600, k=seg(ta, cue("GTA 6 kommt"), cue("GTA 6 kommt") + 0.25) * 3)
+        cv.rect((330, 1120, 670, 1190), YELLOW, INK, 5, r=20)
+        cv.text((UX, 1173), "KOMMT BALD", font(46, "Black"), INK, "ms")
+        return
     T.bedroom(cv, night=False)
     hero(cv, 760, 1720, 0.95, "worry", "phone", blink=blink_at(ta))
     k = ease(seg(ta, cue("Er wartet"), cue("Länger")))
@@ -207,8 +248,8 @@ def buttons(img):
 
 SCENES = [s_hook, s_years, s_wishes, s_sofa, s_chat, s_pause, s_deal, s_controller2, s_final]
 PAUSE = 5
-UI_SCENES = (0, 4)
-INNER_CUTS = []
+UI_SCENES = (0, 1, 4)
+INNER_CUTS = [cue("Bleib dran"), cue("Er wartet")]
 
 
 def render(i, t=0.5, dur=5.0, ta=None):
@@ -232,6 +273,8 @@ def render(i, t=0.5, dur=5.0, ta=None):
 
 
 def chip_for(i, ta):
-    return [("VON: DEINEM FREUND", "white"), ("SEIT 2013", "yellow"), ("SEINE WÜNSCHE", "white"),
+    if i == 1 and ta < cue("Er wartet"):
+        return ("GTA 6", "yellow")
+    return [("GTA 6 · FÜR DEINE FREUNDIN", "yellow"), ("SEIT 2013", "yellow"), ("SEINE WÜNSCHE", "white"),
             ("STANDORT: SOFA", "green"), ("ANDERE FRAUEN: 0", "green"), ("", "white"),
             ("SEIN ANGEBOT", "green"), ("PLAYER 2", "green"), ("DARF ER?", "yellow")][i]
