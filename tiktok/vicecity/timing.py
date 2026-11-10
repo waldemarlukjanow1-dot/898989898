@@ -1,54 +1,55 @@
-"""Phrase timings for 'Vice City' (PLANNED timing – replaced when the voice arrives).
+"""Phrase timings for 'Vice City' (ElevenLabs take, 70.4 s).
 
 The take is long, so pauses are tightened first (each phrase is cut out and re-placed with
 short gaps), then the result is sped up by TEMPO. All public times are video times.
 """
 
-TEMPO = 1.0
+TEMPO = 1.1
 VOICE = "audio/voice_helmut.mp3"
 PAD_IN, PAD_OUT = 0.06, 0.10
 GAP_SAME, GAP_SCENE = 0.22, 0.38
 
 # (start, end, sequence index, text) in the ORIGINAL recording
 RAW = [
-    (0.00, 1.15, 0, "Zwei Uhr dreiundvierzig."),
-    (1.45, 2.22, 0, "Vice City."),
-    (2.52, 4.83, 0, "Du sitzt in einem gestohlenen Lamborghini."),
-    (5.13, 6.28, 0, "Auf dem Rücksitz:"),
-    (6.58, 9.28, 0, "drei Festplatten mit unveröffentlichtem GTA sechs Material."),
-    (9.78, 13.24, 1, "Du hast gerade das teuerste Videospiel der Welt gestohlen."),
-    (13.74, 16.43, 2, "Dein Auftraggeber verspricht dir zehn Millionen Dollar."),
-    (16.73, 18.65, 2, "Deine Freundin wartet am Flughafen."),
-    (18.95, 20.49, 2, "Ein Privatjet steht bereit."),
-    (20.99, 22.53, 3, "Dann vibriert dein Handy."),
-    (22.83, 23.60, 3, "Unbekannte Nummer:"),
-    (23.90, 24.67, 3, "Vertrau niemandem."),
-    (24.97, 26.51, 3, "Auch nicht deiner Freundin."),
-    (27.01, 27.78, 4, "Im Rückspiegel:"),
-    (28.08, 28.58, 4, "Blaulicht."),
-    (28.88, 29.65, 4, "Erst eins."),
-    (29.95, 30.72, 4, "Dann drei."),
-    (31.02, 31.78, 4, "Dann zehn."),
-    (32.28, 33.82, 5, "Du trittst aufs Gas."),
-    (34.12, 34.62, 5, "Zweihundert."),
-    (34.92, 35.42, 5, "Zweihundertvierzig."),
-    (35.72, 38.03, 5, "Die Stadt rast an dir vorbei."),
-    (38.53, 39.03, 6, "Stopp."),
-    (39.33, 42.02, 6, "Wie haben sie dich so schnell gefunden?"),
-    (42.52, 44.06, 7, "Ein Hubschrauber über dir."),
-    (44.36, 46.28, 7, "Der Suchscheinwerfer trifft dein Auto."),
-    (46.58, 47.74, 7, "Straßensperre vor dir."),
-    (48.24, 50.16, 8, "Du reißt das Lenkrad herum."),
-    (50.46, 51.62, 8, "Durch einen Bauzaun."),
-    (51.92, 53.45, 8, "Quer über die Landebahn."),
-    (53.95, 54.72, 9, "Der Privatjet."),
-    (55.02, 56.56, 9, "Die Motoren laufen schon."),
-    (56.86, 58.02, 9, "Deine Freundin winkt:"),
-    (58.32, 59.08, 9, "Steig ein!"),
-    (59.58, 60.74, 10, "Noch fünfzig Meter."),
-    (61.04, 62.96, 10, "Die Polizei direkt hinter dir."),
-    (63.46, 66.54, 11, "Steigst du ein – oder fährst du weiter?"),
-    (66.84, 68.76, 11, "Schreib es in die Kommentare."),
+    (0.00, 1.77, 0, "Zwei Uhr dreiundvierzig."),
+    (2.16, 2.94, 0, "Vice City."),
+    (3.65, 6.08, 0, "Du sitzt in einem gestohlenen Lamborghini."),
+    (6.48, 7.42, 0, "Auf dem Rücksitz:"),
+    (7.71, 11.59, 0, "drei Festplatten mit unveröffentlichtem GTA 6 Material."),
+    (12.23, 15.87, 1, "Du hast gerade das teuerste Videospiel der Welt gestohlen."),
+    (16.42, 19.46, 2, "Dein Auftraggeber verspricht dir zehn Millionen Dollar."),
+    (20.00, 22.02, 2, "Deine Freundin wartet am Flughafen."),
+    (22.40, 23.95, 2, "Ein Privatjet steht bereit."),
+    (24.59, 25.97, 3, "Dann vibriert dein Handy."),
+    (26.52, 27.41, 3, "Unbekannte Nummer:"),
+    (27.90, 29.07, 3, "Vertrau niemandem."),
+    (29.44, 30.75, 3, "Auch nicht deiner Freundin."),
+    (31.40, 32.23, 4, "Im Rückspiegel:"),
+    (32.60, 33.20, 4, "Blaulicht."),
+    (33.57, 34.27, 4, "Erst eins."),
+    (34.63, 35.23, 4, "Dann drei."),
+    (35.65, 36.43, 4, "Dann zehn."),
+    (37.01, 38.13, 5, "Du trittst aufs Gas."),
+    (38.36, 39.30, 5, "Zweihundert."),
+    (39.45, 40.70, 5, "Zweihundertvierzig."),
+    (40.90, 42.60, 5, "Die Stadt rast an dir vorbei."),
+    (43.10, 43.46, 6, "Stopp."),
+    (43.98, 45.71, 6, "Wie haben sie dich so schnell gefunden?"),
+    (46.23, 47.54, 7, "Ein Hubschrauber über dir."),
+    (47.87, 49.83, 7, "Der Suchscheinwerfer trifft dein Auto."),
+    (50.28, 51.64, 7, "Straßensperre vor dir."),
+    (51.79, 53.47, 8, "Du reißt das Lenkrad herum."),
+    (53.81, 54.90, 8, "Durch einen Bauzaun."),
+    (55.10, 56.42, 8, "Quer über die Landebahn."),
+    (56.82, 57.80, 9, "Der Privatjet."),
+    (57.95, 59.25, 9, "Die Motoren laufen schon."),
+    (59.70, 60.75, 9, "Deine Freundin winkt:"),
+    (60.90, 61.69, 9, "Steig ein!"),
+    (62.18, 63.39, 10, "Noch fünfzig Meter."),
+    (63.70, 65.41, 10, "Die Polizei direkt hinter dir."),
+    (65.81, 66.99, 11, "Für Ablenkung sorgen –"),
+    (67.33, 68.49, 11, "oder einsteigen?"),
+    (68.93, 70.21, 11, "Schreib es in die Kommentare."),
 ]
 EXTRA_GAP = {}  # dramatic beats kept a bit longer
 

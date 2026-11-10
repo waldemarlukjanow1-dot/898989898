@@ -74,30 +74,43 @@ def neon_city(cv, ta, scroll=0.0):
         cv.rect((lx, 1480, lx + 110, 1500), (240, 240, 210))
 
 
-def sports_car(cv, x, y, w=620, speed=0.0, driver=True):
-    """Low wedge supercar (own design): long flat hood, short cabin far back, rear spoiler."""
+def sports_car(cv, x, y, w=620, speed=0.0, driver=True, ta=0.0, mood="neutral"):
+    """Low wedge supercar (own design). The driver is only visible through the side window
+    (head + upper chest, clipped to the glass). bob + spinning wheels make it look like it drives."""
     h = w * 0.2
+    y = y + 3 * math.sin(ta * 23)          # road vibration
     body = [(x, y - h * 0.15), (x + w * 0.02, y - h * 0.55), (x + w * 0.3, y - h * 0.75), (x + w * 0.46, y - h * 1.05),
             (x + w * 0.66, y - h * 1.05), (x + w * 0.86, y - h * 0.6), (x + w, y - h * 0.4), (x + w, y)]
     cv.poly(body + [(x, y)], CAR, INK, 6)
     win = [(x + w * 0.47, y - h * 0.98), (x + w * 0.64, y - h * 0.98), (x + w * 0.78, y - h * 0.62), (x + w * 0.38, y - h * 0.62)]
-    cv.poly(win, (60, 80, 120), INK, 4)
+    cv.poly(win, (110, 140, 190), INK, 4)
     if driver:
-        T.character(cv, x + w * 0.58, y - h * 0.62 + 753 * 0.11 - 30, 0.11, "neutral", "down", **T.HERO)
-        cv.poly(win, (120, 160, 220, 90), INK, 4)
+        sub = Canvas((110, 140, 190))
+        s_ = h * 0.00095                       # head + upper chest visible in the window
+        hx, hy_target = x + w * 0.56, y - h * 0.8
+        feet = hy_target + 753 * s_
+        hero(sub, hx, feet, s_, mood, "down", look=(1, 0))
+        mask = Image.new("L", cv.img.size, 0)
+        ImageDraw.Draw(mask).polygon([(u * T.S.SS, v * T.S.SS) for u, v in win], fill=255)
+        cv.img.paste(sub.img, (0, 0), mask)
+        cv.d = ImageDraw.Draw(cv.img, "RGBA")
+        cv.poly(win, (140, 180, 230, 25), INK, 4)
     cv.rect((x - 10, y - h * 0.9, x + w * 0.12, y - h * 0.78), (30, 30, 34), INK, 4)   # rear spoiler
     cv.line([(x + w * 0.05, y - h * 0.78), (x + w * 0.05, y - h * 0.5)], INK, 6)
-    cv.line([(x + w * 0.1, y - h * 0.35), (x + w * 0.9, y - h * 0.35)], (200, 150, 20), 5)  # side line
+    cv.line([(x + w * 0.1, y - h * 0.35), (x + w * 0.9, y - h * 0.35)], (200, 150, 20), 5)
     for wx in (x + w * 0.2, x + w * 0.8):
         cv.circle(wx, y, h * 0.42, (16, 16, 20), INK, 5)
         cv.circle(wx, y, h * 0.2, (180, 180, 190))
-        if speed > 0:
-            a = speed * 40
-            cv.line([(wx, y), (wx + math.cos(a) * h * 0.18, y + math.sin(a) * h * 0.18)], INK, 4)
+        rot = ta * (8 + 30 * speed)
+        for k in range(5):  # spinning rim spokes
+            ang = rot + k * 2 * math.pi / 5
+            cv.line([(wx, y), (wx + math.cos(ang) * h * 0.19, y + math.sin(ang) * h * 0.19)], INK, 4)
     cv.rect((x + w - 24, y - h * 0.38, x + w + 4, y - h * 0.22), (255, 250, 210))
-    for k in range(int(speed * 6)):  # speed lines
-        yy = y - h * (0.2 + 0.18 * k)
-        cv.line([(x - 60 - k * 40, yy), (x - 260 - k * 60, yy)], (255, 255, 255, 140), 6)
+    cv.poly([(x + w, y - h * 0.32), (x + w + 300, y - h * 0.6), (x + w + 300, y + h * 0.1)], (255, 250, 210, 50))  # headlight beam
+    for k in range(2 + int(speed * 5)):  # speed lines behind the car
+        yy = y - h * (0.15 + 0.17 * k)
+        off = (ta * 900 + k * 70) % 120
+        cv.line([(x - 40 - off, yy), (x - 220 - k * 50 - off, yy)], (255, 255, 255, 150), 6)
 
 
 def police_car(cv, x, y, s, ta, k=0):
@@ -140,11 +153,11 @@ def cockpit_you(cv, ta, mood, lean=0.0, wheel=0.0):
 # ------------------------------------------------------------------ scenes (cv, t, dur, ta)
 
 def s_open(cv, t, dur, ta):
-    neon_city(cv, ta, scroll=ta * 0.1)
-    sports_car(cv, 220, 1430, 640)
+    neon_city(cv, ta, scroll=ta * 0.35)
+    sports_car(cv, 220, 1430, 640, ta=ta)
     if ta >= cue("Auf dem Rücksitz"):
-        cv.rect((300, 520, 700, 640), (20, 20, 26, 230), CYAN_N, 4, r=20)
-        cv.text((UX, 600), "3 × PROJEKT 6", font(48, "Black"), CYAN_N, "ms")
+        cv.rect((200, 520, 800, 640), (20, 20, 26, 230), CYAN_N, 4, r=20)
+        cv.text((UX, 600), "3 × GTA6 FESTPLATTEN", font(46, "Black"), CYAN_N, "ms")
 
 
 def drives(cv, ta, glow=True):
@@ -154,7 +167,8 @@ def drives(cv, ta, glow=True):
         x = 170 + k * 250
         cv.rect((x, 760, x + 200, 1060), (40, 42, 50), INK, 6, r=16)
         cv.rect((x + 20, 790, x + 180, 900), (20, 22, 28), INK, 3, r=8)
-        cv.text((x + 100, 860), "P6", font(60, "Black"), CYAN_N, "ms")
+        cv.text((x + 100, 838), "GTA6", font(48, "Black"), CYAN_N, "ms")
+        cv.text((x + 100, 880), "FESTPLATTE", font(22, "Black"), CYAN_N, "ms")
         cv.circle(x + 100, 1010, 12, GREEN)
         if glow:
             cv.glow(x + 100, 900, 160, CYAN_N, 60)
@@ -162,8 +176,18 @@ def drives(cv, ta, glow=True):
 
 def s_drives(cv, t, dur, ta):
     drives(cv, ta)
-    cv.rect((200, 520, 800, 640), (20, 20, 26, 230), YELLOW, 4, r=20)
-    cv.text((UX, 600), "UNVERÖFFENTLICHT", font(48, "Black"), YELLOW, "ms")
+    k = ease(seg(ta, BOUNDS[1][0] + 0.2, BOUNDS[1][0] + 0.5))   # TOP SECRET stamp slams on
+    if k > 0:
+        sc = 1.6 - 0.6 * k
+        img = Image.new("RGBA", (int(820 * T.S.SS), int(170 * T.S.SS)), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        d.rounded_rectangle((8, 8, img.width - 8, img.height - 8), 24, outline=RED + (int(255 * k),), width=14)
+        f = T.S.ImageFont.truetype(font(100, "Black").path, 100 * T.S.SS)
+        d.text((img.width / 2, img.height / 2), "TOP SECRET", font=f, fill=RED + (int(255 * k),), anchor="mm")
+        img = img.rotate(-8, expand=True, resample=Image.BICUBIC)
+        img = img.resize((int(img.width * sc), int(img.height * sc)))
+        cv.img.paste(img, (int(UX * T.S.SS - img.width / 2), int(640 * T.S.SS - img.height / 2)), img)
+        cv.d = ImageDraw.Draw(cv.img, "RGBA")
 
 
 def s_deal(cv, t, dur, ta):
@@ -206,16 +230,38 @@ def s_mirror(cv, t, dur, ta):
     cv.rect((290, 470, 710, 640), None, INK, 8, r=40)
 
 
+def speed_at(ta):
+    a0, a1, a2 = cue("Du trittst"), cue("Zweihundert."), cue("Zweihundertvierzig")
+    if ta < a0:
+        return 120
+    if ta < a1:
+        return 120 + 80 * ease(seg(ta, a0, a1))
+    return 200 + 40 * ease(seg(ta, a1, a2 + 0.4))
+
+
+def tacho(cv, v, cx=UX, cy=640, r=150):
+    cv.circle(cx, cy, r + 14, (20, 20, 26), INK, 6)
+    for k in range(13):  # ticks 0..300
+        ang = math.radians(150 + 240 * k / 12)
+        col = RED if k >= 9 else WHITE
+        cv.line([(cx + math.cos(ang) * (r - 26), cy + math.sin(ang) * (r - 26)), (cx + math.cos(ang) * r, cy + math.sin(ang) * r)], col, 6)
+    for k in range(0, 13, 2):
+        ang = math.radians(150 + 240 * k / 12)
+        cv.text((cx + math.cos(ang) * (r - 56), cy + math.sin(ang) * (r - 56) + 10), str(k * 25), font(22, "Bold"), (200, 200, 210), "ms")
+    ang = math.radians(150 + 240 * v / 300)
+    cv.line([(cx, cy), (cx + math.cos(ang) * (r - 20), cy + math.sin(ang) * (r - 20))], RED, 10)
+    cv.circle(cx, cy, 18, RED, INK, 4)
+    cv.text((cx, cy + r - 20), f"{int(v)}", font(56, "Black"), WHITE, "ms")
+    cv.text((cx, cy + r + 18), "km/h", font(26, "Bold"), (200, 200, 210), "ms")
+
+
 def s_speed(cv, t, dur, ta):
-    v = 0 if ta < cue("Zweihundert.") else (200 if ta < cue("Zweihundertvierzig") else 240)
-    neon_city(cv, ta, scroll=ta * (0.2 + v / 300))
-    sports_car(cv, 260, 1430, 600, speed=min(1.0, v / 240 + 0.2))
-    for k in range(min(3, 1 + int((ta - BOUNDS[5][0]) * 0.8))):
-        police_car(cv, -80 - k * 260 + 120 * t, 1460 + k * 30, 0.6, ta, k)
-    cv.circle(UX, 600, 110, (20, 20, 26), INK, 6)                         # speedometer
-    a = math.radians(140 + 260 * v / 300)
-    cv.line([(UX, 600), (UX + math.cos(a) * 90, 600 + math.sin(a) * 90)], RED, 8)
-    cv.text((UX, 690), f"{v} km/h", font(36, "Black"), WHITE, "ms")
+    v = speed_at(ta)
+    neon_city(cv, ta, scroll=ta * (0.3 + v / 250))
+    sports_car(cv, 260, 1430, 600, speed=min(1.0, v / 240), ta=ta, mood="angry")
+    for k in range(3):
+        police_car(cv, -60 - k * 230 - 40 * (v - 120) / 120, 1460 + k * 30, 0.6, ta, k)
+    tacho(cv, v)
 
 
 def s_pause(cv, t, dur, ta):
@@ -234,7 +280,7 @@ def s_heli(cv, t, dur, ta):
     cv.rect((hx + 60, 500, hx + 220, 524), (30, 30, 36), INK, 4)
     span = 220 * abs(math.cos(ta * 30))
     cv.line([(hx - 20 - span, 460), (hx - 20 + span, 460)], (30, 30, 36), 8)
-    sports_car(cv, 180, 1440, 560, speed=0.8)
+    sports_car(cv, 180, 1440, 560, speed=0.8, ta=ta)
     if ta >= cue("Straßensperre"):
         for k in range(3):
             cv.rect((760 + k * 0, 1220 + k * 70, 1060, 1260 + k * 70), (240, 240, 240), INK, 4)
@@ -268,19 +314,12 @@ def jet(cv, x, y, s=1.0):
 
 
 def s_fence(cv, t, dur, ta):
-    if ta < cue("Quer über"):
-        neon_city(cv, ta, scroll=ta * 0.6)
-        cv.rect((620, 1060, 1080, 1460), None, (200, 200, 210), 0)
-        for k in range(10):  # construction fence
-            cv.line([(620 + k * 46, 1060), (620 + k * 46, 1460)], (200, 200, 210), 6)
-        cv.rect((620, 1060, 1080, 1100), (255, 160, 40), INK, 4)
-        x = 40 + 560 * ease(seg(ta, cue("Du reißt"), cue("Quer über")))
-        sports_car(cv, x, 1440, 560, speed=0.9)
-        if ta >= cue("Durch einen"):
-            cv.text((760, 950), "KRACH!", font(100, "Black"), YELLOW, "ms")
+    if ta < cue("Durch einen"):  # you yank the wheel
+        k = ease(seg(ta, cue("Du reißt"), cue_end("Du reißt")))
+        cockpit_you(cv, ta, "angry", lean=-k, wheel=-70 * k)
         return
     runway(cv, ta)
-    sports_car(cv, 220, 1640, 600, speed=1.0)
+    sports_car(cv, 220, 1640, 600, speed=1.0, ta=ta, mood="angry")
 
 
 def s_jet(cv, t, dur, ta):
@@ -300,7 +339,7 @@ def s_last(cv, t, dur, ta):
     runway(cv, ta)
     jet(cv, 620, 1100, 0.7)
     T.character(cv, 440, 1180, 0.3, "happy", "up", **GIRL)
-    sports_car(cv, 140, 1600, 600, speed=1.0)
+    sports_car(cv, 140, 1600, 600, speed=1.0, ta=ta)
     for k in range(3):
         police_car(cv, -120 - k * 180 + 60 * t, 1760 + k * 30, 0.55, ta, k)
 
@@ -312,7 +351,7 @@ def s_final(cv, t, dur, ta):
 def buttons(img):
     d = ImageDraw.Draw(img, "RGBA")
     f = T.font(44, "Black")
-    for (x0, x1), lab, bg, fg in (((50, 470), "EINSTEIGEN", (40, 140, 70), YELLOW), ((510, 930), "WEITERFAHREN", RED, WHITE)):
+    for (x0, x1), lab, bg, fg in (((50, 470), "ABLENKEN", RED, WHITE), ((510, 930), "EINSTEIGEN", (40, 140, 70), YELLOW)):
         d.rounded_rectangle((x0, 1330, x1, 1440), 28, fill=bg, outline=INK, width=6)
         d.text(((x0 + x1) / 2, 1405), lab, font=f, fill=fg, anchor="ms")
 
@@ -320,7 +359,7 @@ def buttons(img):
 SCENES = [s_open, s_drives, s_deal, s_warning, s_mirror, s_speed, s_pause, s_heli, s_fence, s_jet, s_last, s_final]
 PAUSE = 6
 UI_SCENES = (2, 3, 4, 6, 11)
-INNER_CUTS = [cue("Quer über")]
+INNER_CUTS = [cue("Durch einen")]
 
 
 def render(i, t=0.5, dur=5.0, ta=None):
@@ -348,10 +387,9 @@ def chip_for(i, ta):
         n = 0 if ta < cue("Erst eins") else (1 if ta < cue("Dann drei") else (3 if ta < cue("Dann zehn") else 10))
         return (f"POLIZEI: {n}", "red")
     if i == 5:
-        v = 0 if ta < cue("Zweihundert.") else (200 if ta < cue("Zweihundertvierzig") else 240)
-        return (f"{v} KM/H", "red" if v else "white")
+        return ("VOLLGAS", "red")
     if i == 10:
         return ("NOCH 50 METER", "red")
     return [("02:43 · VICE CITY", "white"), ("TEUERSTES SPIEL DER WELT", "yellow"), ("+ 10.000.000 $", "green"),
             ("UNBEKANNTE NUMMER", "red"), None, None, ("", "white"), ("HUBSCHRAUBER", "red"),
-            ("LANDEBAHN", "white"), ("PRIVATJET", "green"), None, ("EINSTEIGEN?", "yellow")][i]
+            ("AUSWEICHEN!", "red") if ta < cue("Durch einen") else ("LANDEBAHN", "white"), ("PRIVATJET", "green"), None, ("ABLENKEN ODER EINSTEIGEN?", "yellow")][i]
