@@ -198,9 +198,9 @@ SHOCK = 1.3
 def s_hook(cv, t, dur, ta):
     if ta < SHOCK:  # first second: trailer + logo → instantly clear what this is about
         clip(cv, ta + 0.3, (0, 0, W, H), dim=0.25, raw=True, fx=0.62)   # trailer opening: sunset over the city
-        paste_logo(cv, UX, 760, 640, k=seg(ta, 0.0, 0.3) * 3)
-        cv.rect((260, 1110, 740, 1190), YELLOW, INK, 5, r=20)
-        cv.text((UX, 1170), "FÜR DEINEN CHEF", font(46, "Black"), INK, "ms")
+        paste_logo(cv, UX, 700, 540, k=seg(ta, 0.0, 0.3) * 3)
+        cv.rect((260, 1010, 740, 1090), YELLOW, INK, 5, r=20)
+        cv.text((UX, 1070), "FÜR DEINEN CHEF", font(46, "Black"), INK, "ms")
         return
     office(cv, ta, boss_room=True)
     boss(cv, 800, 1780, 0.92, "neutral" if ta < cue("Lies erst") else "angry", "phone", blink=blink_at(ta))

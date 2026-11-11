@@ -1,30 +1,45 @@
-"""Phrase timings for 'GTA 6 – Chef'. PLANNED timing (estimated from syllables) until the
-ElevenLabs take arrives; then RAW is replaced by the real phrase times from speech recognition.
+"""Phrase timings for 'GTA 6 – Chef'. Real phrase times from speech recognition;
+pauses are tightened (each phrase re-placed with short gaps).
 """
-import os
-import re as _re
 
 TEMPO = 1.0
 VOICE = "audio/voice_helmut.mp3"
 PAD_IN, PAD_OUT = 0.06, 0.10
-GAP_SAME, GAP_SCENE = 0.3, 0.45
+GAP_SAME, GAP_SCENE = 0.16, 0.3
 
 
-def _planned():
-    paras = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "vo.txt"), encoding="utf-8").read().strip().split("\n\n")
-    out, t = [], 0.0
-    for s, p in enumerate(paras):
-        for ph in _re.findall(r"[^.:?!]+[.:?!]", p.replace("\n", " ")):
-            ph = ph.strip()
-            syl = sum(max(1, len(_re.findall(r"[aeiouyäöü]+", w.lower()))) for w in ph.split())
-            d = 0.19 * syl + 0.15
-            out.append((round(t, 2), round(t + d, 2), s, ph))
-            t += d + 0.35
-    return out
-
-
-RAW = _planned()
-EXTRA_GAP = {"Jetzt sei mal ehrlich.": 0.2}
+# (start, end, sequence index, text) in the ORIGINAL recording (ElevenLabs take, 62.3 s)
+RAW = [
+    (0.00, 2.89, 0, "Wenn dein Mitarbeiter dir dieses Video geschickt hat:"),
+    (3.26, 6.04, 0, "Lies erst zu Ende, bevor du nein sagst."),
+    (6.75, 9.68, 1, "Am neunzehnten November kommt GTA sechs."),
+    (10.14, 12.48, 1, "Dreizehn Jahre hat er darauf gewartet."),
+    (12.90, 15.31, 1, "Und er braucht genau einen Tag Urlaub."),
+    (15.76, 16.84, 1, "Den Release-Tag."),
+    (17.28, 18.06, 2, "Denn mal ehrlich:"),
+    (18.33, 20.63, 2, "An diesem Tag ist er sowieso nicht bei der Sache."),
+    (21.06, 24.95, 2, "Er sitzt am Schreibtisch, aber im Kopf ist er schon in Vice City."),
+    (25.36, 27.49, 3, "Er schaut alle fünf Minuten aufs Handy."),
+    (27.85, 29.52, 3, "Er tippt Mails mit Fehlern."),
+    (29.92, 32.99, 3, "Und in der Kaffeeküche redet er über nichts anderes."),
+    (33.44, 33.79, 4, "Stopp."),
+    (34.24, 35.38, 4, "Jetzt sei mal ehrlich."),
+    (35.74, 38.05, 4, "Willst du so einen Mitarbeiter im Büro?"),
+    (38.68, 39.60, 5, "Sein Angebot:"),
+    (39.97, 41.14, 5, "Einen Tag frei."),
+    (41.50, 44.66, 5, "Dafür arbeitet er die Woche davor eine Stunde länger."),
+    (45.01, 45.87, 5, "Jeden Tag."),
+    (46.22, 47.07, 5, "Ohne zu meckern."),
+    (47.51, 48.91, 6, "Und danach kommt er zurück."),
+    (49.23, 50.10, 6, "Ausgeschlafen."),
+    (50.40, 51.01, 6, "Glücklich."),
+    (51.24, 53.15, 6, "Motivierter als je zuvor."),
+    (53.60, 54.00, 7, "Also:"),
+    (54.41, 55.33, 7, "Bekommt er frei?"),
+    (55.73, 58.23, 7, "Schreib Ja oder Nein in die Kommentare."),
+    (58.56, 62.08, 7, "Und schick das jedem Kumpel, der am neunzehnten auch frei braucht."),
+]
+EXTRA_GAP = {"Jetzt sei mal ehrlich.": 0.2, "Willst du so einen Mitarbeiter im Büro?": 0.1}
 
 END_HOLD = 1.0
 
