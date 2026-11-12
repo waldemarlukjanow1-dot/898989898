@@ -1,30 +1,52 @@
-"""Phrase timings for 'Gym – 5 Fehler'. PLANNED timing (estimated from syllables) until the
-ElevenLabs take arrives; then RAW is replaced by the real phrase times from speech recognition.
+"""Phrase timings for 'Gym – 5 Fehler'. Real phrase times from speech recognition;
+pauses are tightened (each phrase re-placed with short gaps).
 """
-import os
-import re as _re
 
-TEMPO = 1.0
+TEMPO = 1.05
 VOICE = "audio/voice_helmut.mp3"
 PAD_IN, PAD_OUT = 0.06, 0.10
-GAP_SAME, GAP_SCENE = 0.3, 0.45
+GAP_SAME, GAP_SCENE = 0.16, 0.3
 
 
-def _planned():
-    paras = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "vo.txt"), encoding="utf-8").read().strip().split("\n\n")
-    out, t = [], 0.0
-    for s, p in enumerate(paras):
-        for ph in _re.findall(r"[^.:?!]+[.:?!]", p.replace("\n", " ")):
-            ph = ph.strip()
-            syl = sum(max(1, len(_re.findall(r"[aeiouyäöü]+", w.lower()))) for w in ph.split())
-            d = 0.19 * syl + 0.15
-            out.append((round(t, 2), round(t + d, 2), s, ph))
-            t += d + 0.35
-    return out
-
-
-RAW = _planned()
-EXTRA_GAP = {"Stopp.": 0.25}
+# (start, end, sequence index, text) in the ORIGINAL recording (ElevenLabs take, 67.8 s)
+RAW = [
+    (0.00, 2.97, 0, "Stell dir vor, du trainierst seit drei Monaten."),
+    (3.44, 4.80, 0, "Und nichts passiert."),
+    (5.12, 5.90, 0, "Kein Muskel."),
+    (6.19, 7.07, 0, "Kein Fortschritt."),
+    (7.58, 8.04, 0, "Warum?"),
+    (8.76, 9.71, 1, "Fehler eins:"),
+    (10.12, 12.25, 1, "Du trainierst nur Brust und Arme."),
+    (12.74, 13.16, 1, "Beine?"),
+    (13.51, 14.00, 1, "Nie."),
+    (14.41, 17.19, 1, "Du siehst aus wie eine Glühbirne auf Streichhölzern."),
+    (17.82, 18.72, 2, "Fehler zwei:"),
+    (19.18, 20.78, 2, "Du nimmst zu viel Gewicht."),
+    (21.14, 24.58, 2, "Du schwingst, du wackelst, und dein Rücken schreit."),
+    (25.30, 26.14, 3, "Fehler drei:"),
+    (26.56, 28.48, 3, "Jedes Mal ein anderes Training."),
+    (28.83, 29.58, 3, "Kein Plan."),
+    (29.96, 32.51, 3, "Dein Körper weiß nie, worauf er sich einstellen soll."),
+    (33.22, 34.09, 4, "Fehler vier:"),
+    (34.50, 35.74, 4, "Du trainierst hart."),
+    (36.11, 37.79, 4, "Und isst danach eine Banane."),
+    (38.31, 38.91, 4, "Das war's."),
+    (39.56, 40.00, 5, "Stopp."),
+    (40.35, 42.07, 5, "Jetzt kommt der größte Fehler."),
+    (42.29, 43.49, 5, "Den machen fast alle."),
+    (44.08, 45.05, 6, "Fehler fünf:"),
+    (45.51, 47.93, 6, "Nach drei Wochen siehst du keine Veränderung."),
+    (48.36, 49.66, 6, "Und du hörst auf."),
+    (50.06, 53.15, 6, "Genau dann, wenn dein Körper gerade anfängt."),
+    (53.66, 55.34, 7, "Muskeln wachsen langsam."),
+    (55.70, 56.98, 7, "Aber sie wachsen."),
+    (57.42, 58.47, 7, "Wenn du bleibst."),
+    (58.96, 59.38, 8, "Also:"),
+    (59.80, 61.63, 8, "Welchen Fehler hast du schon gemacht?"),
+    (62.04, 63.61, 8, "Schreib die Nummer in die Kommentare."),
+    (64.07, 67.79, 8, "Und schick das deinem Gym-Partner, der immer nur Arme trainiert."),
+]
+EXTRA_GAP = {"Stopp.": 0.25, "Nie.": 0.1}
 
 END_HOLD = 1.0
 

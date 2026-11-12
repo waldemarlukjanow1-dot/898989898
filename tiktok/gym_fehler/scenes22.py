@@ -205,14 +205,14 @@ def s_hook(cv, t, dur, ta):
     if ta < SHOCK:   # 1-frame shock: red flash, you made it all wrong
         gym(cv)
         cv.overlay((220, 40, 50), int(150 * max(0.3, 1 - ta / 0.4)))
-        hero(cv, 540, 1800, 1.0, "shock", "down", bulk=0.15, blink=False)
+        hero(cv, 540, 1720, 1.0, "shock", "down", bulk=0.15, blink=False)
         label(cv, UX, 640, "DU MACHST ES FALSCH", RED, WHITE, 60, k=seg(ta, 0, 0.2) * 1.0)
         return
     gym(cv, mirror=False)
     mirror_frame(cv, 520, 590, 980, 1300)
     hero(cv, 750, 1400, 0.58, "sad", "down", bulk=0.15, blink=blink_at(ta))     # reflection: still the same
     cv.rect((0, 1400, W, H), (70, 74, 82))
-    hero(cv, 270, 1830, 0.85, "worry" if ta < cue("Warum") else "shock", "flex", bulk=0.15, blink=blink_at(ta))
+    hero(cv, 270, 1760, 0.85, "worry" if ta < cue("Warum") else "shock", "flex", bulk=0.15, blink=blink_at(ta))
     if ta >= cue("Kein Muskel"):
         label(cv, 260, 640, "MUSKELN: 0", WHITE, RED, 44, k=seg(ta, cue("Kein Muskel"), cue("Kein Muskel") + 0.2) * 1.0)
     if ta >= cue("Warum"):
@@ -223,13 +223,13 @@ def s_hook(cv, t, dur, ta):
 def s_err1(cv, t, dur, ta):
     gym(cv)
     legs = ta >= cue("Beine")
-    hero(cv, 380 if ta >= cue("Du siehst") else 540, 1800, 0.95, "smug" if not legs else "worry", "flex",
+    hero(cv, 380 if ta >= cue("Du siehst") else 540, 1720, 0.95, "smug" if not legs else "worry", "flex",
          bulk=1.0, leg_scale=0.35, blink=blink_at(ta))
     label(cv, 300, 640, "BRUST + ARME", GREEN, YELLOW, 46, k=seg(ta, cue("Du trainierst"), cue("Du trainierst") + 0.2) * 1.0)
     if legs:
         label(cv, 300, 760, "BEINE: NIE", RED, WHITE, 46, k=seg(ta, cue("Beine"), cue("Beine") + 0.2) * 1.0)
         for sd in (-1, 1):
-            cv.circle(380 + sd * 30 if ta >= cue("Du siehst") else 540 + sd * 30, 1640, 60, None, RED, 6)
+            cv.circle(380 + sd * 30 if ta >= cue("Du siehst") else 540 + sd * 30, 1560, 60, None, RED, 6)
     if ta >= cue("Du siehst"):
         k = ease(seg(ta, cue("Du siehst"), cue("Du siehst") + 0.5))
         bulb(cv, 820, 1060 + (1 - k) * 300, 0.9)
@@ -243,18 +243,18 @@ def s_err2(cv, t, dur, ta):
     heavy = ta >= cue("Du nimmst")
     wob = math.sin(ta * 9) * (22 if ta >= cue("Du schwingst") else 6)
     lift = 0.45 + 0.15 * math.sin(ta * 5)
-    hero(cv, 560 + wob, 1800, 0.8, "angry" if ta < cue("Du schwingst") else "shock", "bar", bulk=0.4,
+    hero(cv, 560 + wob, 1720, 0.8, "angry" if ta < cue("Du schwingst") else "shock", "bar", bulk=0.4,
          lift=lift, blink=blink_at(ta))
     if heavy:
         label(cv, 300, 640, "200 KG", RED, WHITE, 64, k=seg(ta, cue("Du nimmst"), cue("Du nimmst") + 0.2) * 1.0)
     if ta >= cue("Du schwingst") + 1.4:
-        pain(cv, 560 + wob, 1330, math.sin(ta * 10))
+        pain(cv, 560 + wob, 1250, math.sin(ta * 10))
         label(cv, 800, 1000, "AUA!", RED, WHITE, 56)
 
 
 def s_err3(cv, t, dur, ta):
     gym(cv)
-    hero(cv, 720, 1800, 0.8, "worry", "down", bulk=0.25, blink=blink_at(ta), look=(-1, -1))
+    hero(cv, 720, 1720, 0.8, "worry", "down", bulk=0.25, blink=blink_at(ta), look=(-1, -1))
     names = ["Mo", "Di", "Mi", "Do", "Fr"]
     acts = ["Yoga", "Boxen", "Bizeps", "Spinning", "Bizeps"]
     cv.rect((70, 560, 560, 1150), WHITE, INK, 6, r=20)
@@ -263,9 +263,9 @@ def s_err3(cv, t, dur, ta):
     cv.text((315, 620), "DEIN PLAN?", font(42, "Black"), WHITE, "ms")
     n = int(seg(ta, cue("Jedes Mal"), cue("Jedes Mal") + 1.6) * 5 + 0.999)
     for k in range(n):
-        y = 700 + k * 92
-        cv.text((110, y + 40), names[k], font(40, "Black"), INK)
-        cv.text((230, y + 40), acts[k], font(40, "Bold"), (120, 60, 160))
+        y = 665 + k * 92
+        cv.text((110, y), names[k], font(40, "Black"), INK)
+        cv.text((230, y), acts[k], font(40, "Bold"), (120, 60, 160))
     if ta >= cue("Kein Plan"):
         cv.line([(90, 600), (540, 1130)], RED, 14)
         cv.line([(540, 600), (90, 1130)], RED, 14)
@@ -278,7 +278,7 @@ def s_err3(cv, t, dur, ta):
 def s_err4(cv, t, dur, ta):
     cv.rect((0, 0, W, H), (246, 236, 220))
     cv.rect((0, 1200, W, H), (180, 130, 90))
-    hero(cv, 540, 1800, 0.85, "happy" if ta < cue("Und isst") else "sad", "down", bulk=0.3, blink=blink_at(ta))
+    hero(cv, 540, 1640, 0.85, "happy" if ta < cue("Und isst") else "sad", "down", bulk=0.3, blink=blink_at(ta))
     cv.rect((40, 1400, 1040, 1460), (150, 100, 70), INK, 5)
     cv.rect((80, 1460, 1000, 1700), (130, 88, 60), INK, 5)
     cv.ellipse((350, 1310, 730, 1450), WHITE, INK, 6)                          # empty plate
@@ -298,7 +298,7 @@ def s_err4(cv, t, dur, ta):
 
 def s_pause(cv, t, dur, ta):
     gym(cv)
-    hero(cv, 540, 1800, 1.0, "shock", "down", bulk=0.3, blink=False)
+    hero(cv, 540, 1720, 1.0, "shock", "down", bulk=0.3, blink=False)
     if ta >= cue("Jetzt kommt"):
         label(cv, UX, 700, "DER GRÖSSTE FEHLER", RED, WHITE, 62, k=seg(ta, cue("Jetzt kommt"), cue("Jetzt kommt") + 0.2) * 1.0)
     if ta >= cue("Den machen"):
@@ -311,7 +311,7 @@ def s_err5(cv, t, dur, ta):
     quits = ta >= cue("Und du hörst")
     k = ease(seg(ta, cue("Und du hörst"), cue("Und du hörst") + 1.4))
     x = 420 + 520 * k
-    hero(cv, x, 1800, 0.8, "sad", "down", bulk=0.3, blink=blink_at(ta),
+    hero(cv, x, 1720, 0.8, "sad", "down", bulk=0.3, blink=blink_at(ta),
          bob=-abs(math.sin(ta * 10)) * 10 if 0 < k < 1 else 0)
     p = 0.95 * ease(seg(ta, cue("Fehler fünf"), cue("Und du hörst")))
     progress(cv, 600, p, GREEN if not quits else (230, 160, 40), txt=f"MUSKELN {int(p * 100)} %")
@@ -324,7 +324,7 @@ def s_err5(cv, t, dur, ta):
 def s_stay(cv, t, dur, ta):
     gym(cv)
     g = ease(seg(ta, cue("Muskeln wachsen"), cue("Wenn du bleibst") + 0.8))
-    hero(cv, 540, 1800, 0.95, "happy" if g < 0.9 else "smug", "flex" if g > 0.5 else "down", bulk=0.3 + 0.7 * g,
+    hero(cv, 540, 1720, 0.95, "happy" if g < 0.9 else "smug", "flex" if g > 0.5 else "down", bulk=0.3 + 0.7 * g,
          blink=blink_at(ta))
     progress(cv, 600, 0.95 + 0.05 * g, GREEN, txt=f"MUSKELN {int((0.95 + 0.05 * g) * 100)} %")
     if ta >= cue("Wenn du bleibst"):
@@ -333,7 +333,7 @@ def s_stay(cv, t, dur, ta):
 
 def s_final(cv, t, dur, ta):
     gym(cv)
-    hero(cv, 540, 1800, 0.95, "smug", "point", bulk=1.0, blink=blink_at(ta))
+    hero(cv, 540, 1720, 0.95, "smug", "point", bulk=1.0, blink=blink_at(ta))
     if ta >= cue("Und schick"):
         label(cv, UX, 860, "@dein.gym.partner", WHITE, BLUE, 46)
 
