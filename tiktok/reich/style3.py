@@ -102,7 +102,7 @@ def face(cv, x, y, r, mood="neutral", blink=False, look=(0, 0), talk=0.0, glasse
 def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, talk=0.0, look=(0, 0),
               glasses=False, chain=False, tear=False, bob=0.0, hoodie=HOODIE, hair=HAIR, tie=False,
               bald=False, mustache=False, specs=False, hair_style="fringe", outfit="hoodie", stripe=None,
-              goatee=False, facemask=False, bulk=0.0, lift=0.0):
+              goatee=False, facemask=False, bulk=0.0, lift=0.0, leg_scale=1.0):
     """Front-view character. s=1 -> about 1000 px tall.
     bulk 0..1 = muscular build (broad shoulders, big arms, V-taper); outfit "tank" = gym tank top.
     Extra arm poses for the athletic body: "flex" (double biceps), "bar" (barbell, lift 0..1), "curl" (dumbbell, lift 0..1)."""
@@ -111,9 +111,9 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
     hip_y = y_feet - 300 * s
     sh_y = hip_y - 330 * s
     hy = sh_y - r * 0.82
-    athletic = bulk > 0 or outfit == "tank" or arms in ("flex", "bar", "curl")
+    athletic = bulk > 0 or outfit == "tank" or arms in ("flex", "bar", "curl") or leg_scale != 1.0
     if athletic:
-        _athletic_body(cv, x, y_feet, s, r, hy, hip_y, sh_y, arms, hoodie, outfit, stripe, bulk, lift)
+        _athletic_body(cv, x, y_feet, s, r, hy, hip_y, sh_y, arms, hoodie, outfit, stripe, bulk, lift, leg_scale)
     else:
         # legs + shoes
         for sx in (-1, 1):
@@ -299,7 +299,7 @@ def _limb(cv, pts, w, col):
         cv.circle(p[0], p[1], w / 2, col)
 
 
-def _athletic_body(cv, x, y_feet, s, r, hy, hip_y, sh_y, arms, shirt, outfit, stripe, B, lift):
+def _athletic_body(cv, x, y_feet, s, r, hy, hip_y, sh_y, arms, shirt, outfit, stripe, B, lift, leg_scale=1.0):
     """Muscular front-view body; B = bulk 0..1. Arms are skin-coloured in a tank top."""
     shw = (190 + 85 * B) * s            # half shoulder width
     waw = (172 + 12 * B) * s             # half waist width
@@ -309,7 +309,7 @@ def _athletic_body(cv, x, y_feet, s, r, hy, hip_y, sh_y, arms, shirt, outfit, st
     dark = tuple(int(c * 0.78) for c in shirt)
     skin_d = (226, 180, 136)
     # legs
-    legw, legx = 52 * (1 + 0.35 * B) * s, 70 * (1 + 0.2 * B) * s
+    legw, legx = 52 * (1 + 0.35 * B) * s * leg_scale, 70 * (1 + 0.2 * B) * s * (0.5 + 0.5 * leg_scale)
     for sx in (-1, 1):
         cv.rect((x + sx * legx - legw, hip_y - 20 * s, x + sx * legx + legw, y_feet - 30 * s), PANTS, INK, 6, r=int(16 * s))
         cv.ellipse((x + sx * (legx + 5 * s) - 78 * s, y_feet - 58 * s, x + sx * (legx + 5 * s) + 78 * s, y_feet + 8 * s), WHITE, INK, 6)
