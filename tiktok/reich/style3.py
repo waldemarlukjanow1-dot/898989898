@@ -102,77 +102,83 @@ def face(cv, x, y, r, mood="neutral", blink=False, look=(0, 0), talk=0.0, glasse
 def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, talk=0.0, look=(0, 0),
               glasses=False, chain=False, tear=False, bob=0.0, hoodie=HOODIE, hair=HAIR, tie=False,
               bald=False, mustache=False, specs=False, hair_style="fringe", outfit="hoodie", stripe=None,
-              goatee=False, facemask=False):
-    """Front-view character. s=1 -> about 1000 px tall."""
+              goatee=False, facemask=False, bulk=0.0, lift=0.0):
+    """Front-view character. s=1 -> about 1000 px tall.
+    bulk 0..1 = muscular build (broad shoulders, big arms, V-taper); outfit "tank" = gym tank top.
+    Extra arm poses for the athletic body: "flex" (double biceps), "bar" (barbell, lift 0..1), "curl" (dumbbell, lift 0..1)."""
     r = 150 * s
     y_feet += bob
     hip_y = y_feet - 300 * s
     sh_y = hip_y - 330 * s
     hy = sh_y - r * 0.82
-    # legs + shoes
-    for sx in (-1, 1):
-        cv.rect((x + sx * 70 * s - 52 * s, hip_y - 20 * s, x + sx * 70 * s + 52 * s, y_feet - 30 * s), PANTS, INK, 6, r=int(16 * s))
-        cv.ellipse((x + sx * 75 * s - 78 * s, y_feet - 58 * s, x + sx * 75 * s + 78 * s, y_feet + 8 * s), WHITE, INK, 6)
-    # arms behind / beside the body
-    def arm(side, kind):
-        ax = x + side * 175 * s
-        if kind == "down":
-            cv.rect((ax - 44 * s, sh_y + 20 * s, ax + 44 * s, hip_y + 10 * s), hoodie, INK, 6, r=int(40 * s))
-            if outfit == "sweater":
-                st = stripe or tuple(min(255, int(c * 1.55)) for c in hoodie)
-                y = sh_y + 70 * s
-                while y < hip_y - 20 * s:
-                    cv.rect((ax - 38 * s, y, ax + 38 * s, y + 26 * s), st)
-                    y += 70 * s
-                cv.rect((ax - 44 * s, sh_y + 20 * s, ax + 44 * s, hip_y + 10 * s), None, INK, 6, r=int(40 * s))
-            cv.circle(ax, hip_y + 30 * s, 42 * s, SKIN, INK, 6)
-        elif kind == "up":
-            cv.line([(ax, sh_y + 40 * s), (ax + side * 70 * s, sh_y - 230 * s)], INK, 96 * s)
-            cv.line([(ax, sh_y + 40 * s), (ax + side * 70 * s, sh_y - 230 * s)], hoodie, 84 * s)
-            cv.circle(ax + side * 70 * s, sh_y - 260 * s, 44 * s, SKIN, INK, 6)
-    left = "up" if arms == "up" else "down"
-    right = "up" if arms == "up" else ("none" if arms in ("phone", "point", "head") else "down")
-    arm(-1, left)
-    if right != "none":
-        arm(1, right)
-    # torso (hoodie)
-    cv.rect((x - 190 * s, sh_y - 10 * s, x + 190 * s, hip_y + 30 * s), hoodie, INK, 7, r=int(90 * s))
-    if outfit == "sweater":  # crew-neck jumper with horizontal stripes and ribbed hem
-        st = stripe or tuple(min(255, int(c * 1.55)) for c in hoodie)
-        y = sh_y + 70 * s
-        while y < hip_y - 10 * s:
-            cv.rect((x - 183 * s, y, x + 183 * s, y + 26 * s), st)
-            y += 70 * s
-        cv.rect((x - 190 * s, sh_y - 10 * s, x + 190 * s, hip_y + 30 * s), None, INK, 7, r=int(90 * s))
-        cv.rect((x - 186 * s, hip_y - 6 * s, x + 186 * s, hip_y + 26 * s), tuple(int(c * 0.8) for c in hoodie), INK, 4, r=int(14 * s))
-        cv.d.chord(cv.s((x - 95 * s, sh_y - 55 * s, x + 95 * s, sh_y + 45 * s)), 0, 180, fill=tuple(int(c * 0.75) for c in hoodie))
-        cv.d.arc(cv.s((x - 95 * s, sh_y - 55 * s, x + 95 * s, sh_y + 45 * s)), 0, 180, fill=INK, width=int(5 * s * 2))
+    athletic = bulk > 0 or outfit == "tank" or arms in ("flex", "bar", "curl")
+    if athletic:
+        _athletic_body(cv, x, y_feet, s, r, hy, hip_y, sh_y, arms, hoodie, outfit, stripe, bulk, lift)
     else:
-        cv.rect((x - 100 * s, hip_y - 130 * s, x + 100 * s, hip_y - 40 * s), HOODIE_D, INK, 5, r=int(20 * s))
-        cv.d.chord(cv.s((x - 150 * s, sh_y - 70 * s, x + 150 * s, sh_y + 90 * s)), 0, 180, fill=HOODIE_D)  # hood rim
+        # legs + shoes
         for sx in (-1, 1):
-            cv.line([(x + sx * 45 * s, sh_y + 20 * s), (x + sx * 45 * s, sh_y + 130 * s)], WHITE, 7 * s)
-            cv.circle(x + sx * 45 * s, sh_y + 136 * s, 9 * s, WHITE, INK, 2)
-    if tie:
-        cv.poly([(x - 30 * s, sh_y + 20 * s), (x + 30 * s, sh_y + 20 * s), (x + 40 * s, sh_y + 220 * s), (x, sh_y + 270 * s),
-                 (x - 40 * s, sh_y + 220 * s)], (200, 40, 50), INK, 5)
-    if chain:
-        cv.arc((x - 110 * s, sh_y - 40 * s, x + 110 * s, sh_y + 150 * s), 20, 160, YELLOW, int(14 * s))
-        cv.circle(x, sh_y + 150 * s, 26 * s, YELLOW, INK, 4)
-        cv.text((x, sh_y + 162 * s), "$", font(30 * s, "Black"), INK, "ms")
-    # right arm in front holding phone
-    if arms == "phone":
-        cv.rect((x + 30 * s, sh_y + 60 * s, x + 210 * s, sh_y + 160 * s), hoodie, INK, 6, r=int(46 * s))
-        cv.rect((x + 40 * s, sh_y + 10 * s, x + 140 * s, sh_y + 190 * s), (50, 120, 230), INK, 6, r=int(16 * s))
-        cv.rect((x + 54 * s, sh_y + 24 * s, x + 126 * s, sh_y + 176 * s), (110, 170, 255))
-        cv.circle(x + 90 * s, sh_y + 165 * s, 38 * s, SKIN, INK, 6)
-    elif arms == "point":
-        cv.line([(x + 175 * s, sh_y + 40 * s), (x + 330 * s, sh_y - 40 * s)], INK, 96 * s)
-        cv.line([(x + 175 * s, sh_y + 40 * s), (x + 330 * s, sh_y - 40 * s)], hoodie, 84 * s)
-        cv.circle(x + 345 * s, sh_y - 50 * s, 42 * s, SKIN, INK, 6)
-    elif arms == "head":
-        cv.line([(x + 175 * s, sh_y + 40 * s), (x + 160 * s, hy - 40 * s)], INK, 96 * s)
-        cv.line([(x + 175 * s, sh_y + 40 * s), (x + 160 * s, hy - 40 * s)], hoodie, 84 * s)
+            cv.rect((x + sx * 70 * s - 52 * s, hip_y - 20 * s, x + sx * 70 * s + 52 * s, y_feet - 30 * s), PANTS, INK, 6, r=int(16 * s))
+            cv.ellipse((x + sx * 75 * s - 78 * s, y_feet - 58 * s, x + sx * 75 * s + 78 * s, y_feet + 8 * s), WHITE, INK, 6)
+        # arms behind / beside the body
+        def arm(side, kind):
+            ax = x + side * 175 * s
+            if kind == "down":
+                cv.rect((ax - 44 * s, sh_y + 20 * s, ax + 44 * s, hip_y + 10 * s), hoodie, INK, 6, r=int(40 * s))
+                if outfit == "sweater":
+                    st = stripe or tuple(min(255, int(c * 1.55)) for c in hoodie)
+                    y = sh_y + 70 * s
+                    while y < hip_y - 20 * s:
+                        cv.rect((ax - 38 * s, y, ax + 38 * s, y + 26 * s), st)
+                        y += 70 * s
+                    cv.rect((ax - 44 * s, sh_y + 20 * s, ax + 44 * s, hip_y + 10 * s), None, INK, 6, r=int(40 * s))
+                cv.circle(ax, hip_y + 30 * s, 42 * s, SKIN, INK, 6)
+            elif kind == "up":
+                cv.line([(ax, sh_y + 40 * s), (ax + side * 70 * s, sh_y - 230 * s)], INK, 96 * s)
+                cv.line([(ax, sh_y + 40 * s), (ax + side * 70 * s, sh_y - 230 * s)], hoodie, 84 * s)
+                cv.circle(ax + side * 70 * s, sh_y - 260 * s, 44 * s, SKIN, INK, 6)
+        left = "up" if arms == "up" else "down"
+        right = "up" if arms == "up" else ("none" if arms in ("phone", "point", "head") else "down")
+        arm(-1, left)
+        if right != "none":
+            arm(1, right)
+        # torso (hoodie)
+        cv.rect((x - 190 * s, sh_y - 10 * s, x + 190 * s, hip_y + 30 * s), hoodie, INK, 7, r=int(90 * s))
+        if outfit == "sweater":  # crew-neck jumper with horizontal stripes and ribbed hem
+            st = stripe or tuple(min(255, int(c * 1.55)) for c in hoodie)
+            y = sh_y + 70 * s
+            while y < hip_y - 10 * s:
+                cv.rect((x - 183 * s, y, x + 183 * s, y + 26 * s), st)
+                y += 70 * s
+            cv.rect((x - 190 * s, sh_y - 10 * s, x + 190 * s, hip_y + 30 * s), None, INK, 7, r=int(90 * s))
+            cv.rect((x - 186 * s, hip_y - 6 * s, x + 186 * s, hip_y + 26 * s), tuple(int(c * 0.8) for c in hoodie), INK, 4, r=int(14 * s))
+            cv.d.chord(cv.s((x - 95 * s, sh_y - 55 * s, x + 95 * s, sh_y + 45 * s)), 0, 180, fill=tuple(int(c * 0.75) for c in hoodie))
+            cv.d.arc(cv.s((x - 95 * s, sh_y - 55 * s, x + 95 * s, sh_y + 45 * s)), 0, 180, fill=INK, width=int(5 * s * 2))
+        else:
+            cv.rect((x - 100 * s, hip_y - 130 * s, x + 100 * s, hip_y - 40 * s), HOODIE_D, INK, 5, r=int(20 * s))
+            cv.d.chord(cv.s((x - 150 * s, sh_y - 70 * s, x + 150 * s, sh_y + 90 * s)), 0, 180, fill=HOODIE_D)  # hood rim
+            for sx in (-1, 1):
+                cv.line([(x + sx * 45 * s, sh_y + 20 * s), (x + sx * 45 * s, sh_y + 130 * s)], WHITE, 7 * s)
+                cv.circle(x + sx * 45 * s, sh_y + 136 * s, 9 * s, WHITE, INK, 2)
+        if tie:
+            cv.poly([(x - 30 * s, sh_y + 20 * s), (x + 30 * s, sh_y + 20 * s), (x + 40 * s, sh_y + 220 * s), (x, sh_y + 270 * s),
+                     (x - 40 * s, sh_y + 220 * s)], (200, 40, 50), INK, 5)
+        if chain:
+            cv.arc((x - 110 * s, sh_y - 40 * s, x + 110 * s, sh_y + 150 * s), 20, 160, YELLOW, int(14 * s))
+            cv.circle(x, sh_y + 150 * s, 26 * s, YELLOW, INK, 4)
+            cv.text((x, sh_y + 162 * s), "$", font(30 * s, "Black"), INK, "ms")
+        # right arm in front holding phone
+        if arms == "phone":
+            cv.rect((x + 30 * s, sh_y + 60 * s, x + 210 * s, sh_y + 160 * s), hoodie, INK, 6, r=int(46 * s))
+            cv.rect((x + 40 * s, sh_y + 10 * s, x + 140 * s, sh_y + 190 * s), (50, 120, 230), INK, 6, r=int(16 * s))
+            cv.rect((x + 54 * s, sh_y + 24 * s, x + 126 * s, sh_y + 176 * s), (110, 170, 255))
+            cv.circle(x + 90 * s, sh_y + 165 * s, 38 * s, SKIN, INK, 6)
+        elif arms == "point":
+            cv.line([(x + 175 * s, sh_y + 40 * s), (x + 330 * s, sh_y - 40 * s)], INK, 96 * s)
+            cv.line([(x + 175 * s, sh_y + 40 * s), (x + 330 * s, sh_y - 40 * s)], hoodie, 84 * s)
+            cv.circle(x + 345 * s, sh_y - 50 * s, 42 * s, SKIN, INK, 6)
+        elif arms == "head":
+            cv.line([(x + 175 * s, sh_y + 40 * s), (x + 160 * s, hy - 40 * s)], INK, 96 * s)
+            cv.line([(x + 175 * s, sh_y + 40 * s), (x + 160 * s, hy - 40 * s)], hoodie, 84 * s)
     # head
     for sx in (-1, 1):
         cv.circle(x + sx * r * 0.98, hy + r * 0.1, r * 0.2, SKIN, INK, 6)
@@ -278,9 +284,135 @@ def character(cv, x, y_feet, s=1.0, mood="neutral", arms="phone", blink=False, t
         for sx in (-1, 1):
             cv.circle(x + sx * r * 0.38, hy + r * 0.17, r * 0.33, None, INK, 6)
         cv.line([(x - r * 0.05, hy + r * 0.12), (x + r * 0.05, hy + r * 0.12)], INK, 6)
-    if arms == "head":
+    if arms == "head" and not athletic:
         cv.circle(x + 160 * s, hy - 60 * s, 46 * s, SKIN, INK, 6)
     return hy
+
+
+def _limb(cv, pts, w, col):
+    """Thick rounded limb through pts (outlined)."""
+    cv.line(pts, INK, w + 12)
+    for p in pts:
+        cv.circle(p[0], p[1], (w + 12) / 2, INK)
+    cv.line(pts, col, w)
+    for p in pts:
+        cv.circle(p[0], p[1], w / 2, col)
+
+
+def _athletic_body(cv, x, y_feet, s, r, hy, hip_y, sh_y, arms, shirt, outfit, stripe, B, lift):
+    """Muscular front-view body; B = bulk 0..1. Arms are skin-coloured in a tank top."""
+    shw = (190 + 85 * B) * s            # half shoulder width
+    waw = (172 + 12 * B) * s             # half waist width
+    armw = (84 + 44 * B) * s
+    hand = (42 + 14 * B) * s
+    acol = SKIN if outfit == "tank" else shirt
+    dark = tuple(int(c * 0.78) for c in shirt)
+    skin_d = (226, 180, 136)
+    # legs
+    legw, legx = 52 * (1 + 0.35 * B) * s, 70 * (1 + 0.2 * B) * s
+    for sx in (-1, 1):
+        cv.rect((x + sx * legx - legw, hip_y - 20 * s, x + sx * legx + legw, y_feet - 30 * s), PANTS, INK, 6, r=int(16 * s))
+        cv.ellipse((x + sx * (legx + 5 * s) - 78 * s, y_feet - 58 * s, x + sx * (legx + 5 * s) + 78 * s, y_feet + 8 * s), WHITE, INK, 6)
+    shoulder = {sd: (x + sd * (shw - 40 * s), sh_y + 55 * s) for sd in (-1, 1)}
+    hands = {}
+
+    def arm(sd, pose):
+        sx_, sy_ = shoulder[sd]
+        if pose == "down":
+            el = (sx_ + sd * 22 * s * (1 + B), sy_ + 170 * s)
+            hd = (sx_ + sd * 26 * s * (1 + B), hip_y + 20 * s)
+            _limb(cv, [(sx_, sy_), el, hd], armw, acol)
+            if B > 0.15:                  # biceps / forearm shape
+                cv.circle(el[0] - sd * armw * 0.05, sy_ + 95 * s, armw * (0.5 + 0.12 * B), acol)
+        elif pose == "flex":
+            el = (sx_ + sd * (135 + 25 * B) * s, sy_ - 5 * s)
+            hd = (el[0] - sd * 10 * s, sy_ - 185 * s)
+            _limb(cv, [(sx_, sy_), el], armw, acol)
+            _limb(cv, [el, hd], armw * 0.86, acol)
+            mx, my = (sx_ + el[0]) / 2, sy_ - armw * 0.35
+            cv.circle(mx, my, armw * (0.36 + 0.2 * B), acol, INK, 6)    # biceps peak
+            cv.line([(mx - armw * 0.25, my + armw * 0.25), (mx + armw * 0.25, my + armw * 0.25)], acol, armw * 0.5)
+        elif pose == "up":
+            hd = (sx_ + sd * 70 * s, sh_y - 260 * s)
+            _limb(cv, [(sx_, sy_), hd], armw, acol)
+        elif pose == "point":
+            hd = (x + sd * (330 + 60 * B) * s, sh_y - 50 * s)
+            _limb(cv, [(sx_, sy_), hd], armw, acol)
+        elif pose == "bar":               # overhead / front press, lift 0..1
+            hy_ = sh_y + 40 * s - 300 * s * lift
+            hd = (sx_ + sd * 40 * s, hy_)
+            el = (sx_ + sd * (110 + 30 * B) * s, (sy_ + hy_) / 2 + 60 * s)
+            _limb(cv, [(sx_, sy_), el, hd], armw * 0.95, acol)
+        elif pose == "curl":              # dumbbell curl, lift 0..1
+            el = (sx_ + sd * 10 * s, sy_ + 200 * s)
+            ang = math.radians(90 - 160 * lift)
+            hd = (el[0] + sd * 40 * s * math.sin(math.radians(160 * lift)), el[1] + math.sin(ang) * 190 * s)
+            _limb(cv, [(sx_, sy_), el], armw, acol)
+            cv.circle((sx_ + el[0]) / 2, (sy_ + el[1]) / 2, armw * (0.5 + 0.25 * B * lift + 0.1 * B), acol)
+            _limb(cv, [el, hd], armw * 0.85, acol)
+        hands[sd] = hd
+
+    poses = {"flex": ("flex", "flex"), "bar": ("bar", "bar"), "up": ("up", "up"), "point": ("down", "point"),
+             "curl": ("down", "curl")}.get(arms, ("down", "down"))
+    arm(-1, poses[0])
+    arm(1, poses[1])
+    # neck / traps
+    cv.poly([(x - 0.42 * shw, sh_y + 20 * s), (x - r * 0.42, hy + r * 0.6), (x + r * 0.42, hy + r * 0.6),
+             (x + 0.42 * shw, sh_y + 20 * s)], SKIN, INK, 6)
+    # torso: V-taper
+    torso = [(x - shw + 40 * s, sh_y - 5 * s), (x + shw - 40 * s, sh_y - 5 * s), (x + shw, sh_y + 80 * s),
+             (x + waw, hip_y + 30 * s), (x - waw, hip_y + 30 * s), (x - shw, sh_y + 80 * s)]
+    if outfit == "tank":
+        cv.poly(torso, SKIN, INK, 7)
+        tank = [(x - 0.62 * shw, sh_y - 5 * s), (x - 0.38 * shw, sh_y - 5 * s), (x - 0.2 * shw, sh_y + 90 * s),
+                (x + 0.2 * shw, sh_y + 90 * s), (x + 0.38 * shw, sh_y - 5 * s), (x + 0.62 * shw, sh_y - 5 * s),
+                (x + 0.86 * shw, sh_y + 200 * s), (x + waw, hip_y + 30 * s), (x - waw, hip_y + 30 * s),
+                (x - 0.86 * shw, sh_y + 200 * s)]
+        cv.poly(tank, shirt, INK, 6)
+        if B > 0.3:                       # pecs + abs hints
+            for sd in (-1, 1):
+                cv.arc((x + sd * 0.45 * shw - 0.45 * shw, sh_y + 60 * s, x + sd * 0.45 * shw + 0.45 * shw, sh_y + 230 * s),
+                       20 if sd < 0 else 40, 140 if sd < 0 else 160, dark, int(7 * s))
+            for k in range(2):
+                yy = sh_y + (260 + 60 * k) * s
+                cv.line([(x - 50 * s, yy), (x + 50 * s, yy)], dark, 5 * s)
+            cv.line([(x, sh_y + 240 * s), (x, hip_y - 20 * s)], dark, 5 * s)
+    else:
+        cv.poly(torso, shirt, INK, 7)
+        if outfit == "sweater":
+            st = stripe or tuple(min(255, int(c * 1.55)) for c in shirt)
+            y = sh_y + 70 * s
+            while y < hip_y - 10 * s:
+                f = (y - sh_y) / (hip_y - sh_y)
+                hw = shw + (waw - shw) * f - 8 * s
+                cv.rect((x - hw, y, x + hw, y + 26 * s), st)
+                y += 70 * s
+            cv.poly(torso, None, INK, 7)
+        cv.d.chord(cv.s((x - 95 * s, sh_y - 55 * s, x + 95 * s, sh_y + 45 * s)), 0, 180, fill=dark)
+    cv.rect((x - waw + 4 * s, hip_y - 2 * s, x + waw - 4 * s, hip_y + 34 * s), PANTS, INK, 4, r=int(10 * s))
+    # deltoids over the torso edge
+    for sd in (-1, 1):
+        if poses[0 if sd < 0 else 1] in ("down", "point", "bar", "curl", "up", "flex"):
+            px_, py_ = shoulder[sd]
+            cv.circle(px_, py_ - 5 * s, armw * 0.52, acol, INK, 6)
+            cv.circle(px_ - sd * armw * 0.1, py_ + 6 * s, armw * 0.42, acol)
+    # hands (+ props)
+    if arms == "bar":
+        y_ = hands[-1][1]
+        cv.line([(x - shw - 230 * s, y_), (x + shw + 230 * s, y_)], (90, 92, 100), 22 * s)
+        for sd in (-1, 1):
+            for k, (ww_, hh_) in enumerate(((44, 230), (34, 180))):
+                px_ = x + sd * (shw + 150 * s + k * 50 * s)
+                cv.rect((px_ - ww_ * s / 2, y_ - hh_ * s / 2, px_ + ww_ * s / 2, y_ + hh_ * s / 2), (40, 42, 50), INK, 5, r=int(8 * s))
+    if arms == "curl":
+        hx, hy2 = hands[1]
+        cv.line([(hx - 70 * s, hy2), (hx + 70 * s, hy2)], (90, 92, 100), 20 * s)
+        for sd in (-1, 1):
+            cv.rect((hx + sd * 70 * s - 22 * s, hy2 - 55 * s, hx + sd * 70 * s + 22 * s, hy2 + 55 * s), (40, 42, 50), INK, 5, r=int(8 * s))
+    for sd, (hx, hy2) in hands.items():
+        cv.circle(hx, hy2, hand, SKIN, INK, 6)
+        if arms in ("flex",):
+            cv.arc((hx - hand * 0.6, hy2 - hand * 0.5, hx + hand * 0.6, hy2 + hand * 0.4), 200, 340, skin_d, int(5 * s))
 
 
 # ------------------------------------------------------------------ props / backgrounds
