@@ -1,30 +1,56 @@
-"""Phrase timings for 'Gym – ab heute'. PLANNED timing (estimated from syllables) until the
-ElevenLabs take arrives; then RAW is replaced by the real phrase times from speech recognition.
+"""Phrase timings for 'Gym – ab heute'. Real phrase times from speech recognition;
+pauses are tightened (each phrase re-placed with short gaps).
 """
-import os
-import re as _re
 
-TEMPO = 1.0
+TEMPO = 1.035
 VOICE = "audio/voice_helmut.mp3"
 PAD_IN, PAD_OUT = 0.06, 0.10
-GAP_SAME, GAP_SCENE = 0.3, 0.45
+GAP_SAME, GAP_SCENE = 0.16, 0.3
 
 
-def _planned():
-    paras = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "vo.txt"), encoding="utf-8").read().strip().split("\n\n")
-    out, t = [], 0.0
-    for s, p in enumerate(paras):
-        for ph in _re.findall(r"[^.:?!]+[.:?!]", p.replace("\n", " ")):
-            ph = ph.strip()
-            syl = sum(max(1, len(_re.findall(r"[aeiouyäöü]+", w.lower()))) for w in ph.split())
-            d = 0.19 * syl + 0.15
-            out.append((round(t, 2), round(t + d, 2), s, ph))
-            t += d + 0.35
-    return out
-
-
-RAW = _planned()
-EXTRA_GAP = {"Stopp.": 0.25}
+# (start, end, sequence index, text) in the ORIGINAL recording (ElevenLabs take, 67.3 s)
+RAW = [
+    (0.00, 2.86, 0, "Stell dir vor, du ziehst ab heute Gym durch."),
+    (3.21, 3.97, 0, "Kein Montag."),
+    (4.29, 5.08, 0, "Kein Neujahr."),
+    (5.54, 5.98, 0, "Heute."),
+    (6.67, 7.45, 1, "Tag eins:"),
+    (7.90, 10.26, 1, "Du weißt nicht, welche Maschine was macht."),
+    (10.67, 11.05, 1, "Egal."),
+    (11.44, 12.08, 1, "Du bist da."),
+    (12.59, 13.99, 1, "Das ist der schwerste Teil."),
+    (14.69, 15.58, 2, "Woche eins:"),
+    (15.99, 17.76, 2, "Muskelkater überall."),
+    (18.19, 19.69, 2, "Treppen werden dein Feind."),
+    (20.14, 21.51, 2, "Aber du gehst trotzdem."),
+    (22.22, 22.93, 3, "Tipp eins:"),
+    (23.31, 24.61, 3, "Dreimal die Woche reicht."),
+    (24.96, 25.63, 3, "Ganzkörper."),
+    (25.91, 27.11, 3, "Fünfundvierzig Minuten."),
+    (27.81, 28.48, 3, "Tipp zwei:"),
+    (28.87, 31.02, 3, "Jede Woche ein bisschen mehr Gewicht."),
+    (31.38, 32.11, 3, "Nur ein bisschen."),
+    (32.78, 33.46, 3, "Tipp drei:"),
+    (33.87, 35.22, 3, "Iss genug Eiweiß."),
+    (35.51, 36.90, 3, "Und schlaf acht Stunden."),
+    (37.23, 39.22, 3, "Denn im Schlaf wachsen deine Muskeln."),
+    (39.93, 40.84, 4, "Monat drei:"),
+    (41.26, 42.78, 4, "Dein T-Shirt sitzt enger."),
+    (43.21, 44.00, 4, "An den Schultern."),
+    (44.72, 45.63, 4, "Monat sechs:"),
+    (45.94, 46.86, 4, "Jemand fragt dich:"),
+    (47.14, 47.90, 4, "Trainierst du?"),
+    (48.36, 50.79, 5, "Und nach einem Jahr schaust du in den Spiegel."),
+    (51.20, 52.91, 5, "Und erkennst dich kaum wieder."),
+    (53.57, 53.98, 6, "Stopp."),
+    (54.48, 58.97, 6, "Das Einzige, was zwischen dir und diesem Spiegelbild steht, ist ein Wort:"),
+    (59.51, 59.98, 6, "Heute."),
+    (60.55, 60.96, 7, "Also:"),
+    (61.39, 62.26, 7, "Wann fängst du an?"),
+    (62.70, 65.06, 7, "Schreib „Tag eins“ in die Kommentare."),
+    (65.33, 67.12, 7, "Und markier deinen Gym-Partner."),
+]
+EXTRA_GAP = {"Stopp.": 0.25, "Heute.": 0.15}
 
 END_HOLD = 1.0
 

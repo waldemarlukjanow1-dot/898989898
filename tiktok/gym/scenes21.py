@@ -23,8 +23,9 @@ MATE = dict(hoodie=(200, 60, 60), hair=(150, 90, 40), outfit="tank", hair_style=
 SHOCK = 0.9
 
 
-def cue(text):
-    return next(a / TEMPO for a, b, s, t in PHRASES if t.startswith(text))
+def cue(text, last=False):
+    hits = [a / TEMPO for a, b, s, t in PHRASES if t.startswith(text)]
+    return hits[-1] if last else hits[0]
 
 
 def talking(ta, seqs):
@@ -180,7 +181,7 @@ def s_hook(cv, t, dur, ta):
             label(cv, 300 + (0 if lab == "MONTAG" else 380), 720 + 0 * y, lab, WHITE, INK, 46,
                   k=seg(ta, cue(key), cue(key) + 0.2) * 1.0)
             x = 300 + (0 if lab == "MONTAG" else 380)
-            cv.line([(x - 150, 700), (x + 150, 660)], RED, 12)
+            cv.line([(x - 140, 712), (x + 140, 688)], RED, 12)
     if ta >= cue("Heute"):
         label(cv, UX, 860, "HEUTE ✓".replace(" ✓", "!"), GREEN, YELLOW, 70, k=seg(ta, cue("Heute"), cue("Heute") + 0.2) * 1.0)
 
@@ -205,7 +206,7 @@ def s_day1(cv, t, dur, ta):
     hero(cv, 300, 1760, 0.8, "happy" if sure else "worry", "down", bulk=0.0,
          blink=blink_at(ta), look=(1, -1) if not sure else (0, 0))
     if not sure and ta >= cue("Du weißt") + 0.4:
-        for j, (x, y) in enumerate(((620, 520), (780, 470), (900, 560))):
+        for j, (x, y) in enumerate(((640, 640), (780, 600), (900, 680))):
             if ta >= cue("Du weißt") + 0.4 + j * 0.3:
                 cv.text((x, y), "?", font(110, "Black"), RED, "ms")
     if ta >= cue("Du bist da"):
@@ -319,8 +320,9 @@ def s_pause(cv, t, dur, ta):
     hero(cv, 280, 1800, 0.8, "worry", "down", bulk=0.0, tank=False, blink=blink_at(ta))   # you today
     label(cv, 280, 560, "DU HEUTE", WHITE, INK, 44)
     label(cv, 780, 560, "IN 1 JAHR", YELLOW, INK, 44)
-    if ta >= cue("Heute") - 0.05:
-        label(cv, UX, 800, "HEUTE.", GREEN, YELLOW, 110, k=seg(ta, cue("Heute") - 0.05, cue("Heute") + 0.2) * 1.0)
+    h = cue("Heute", last=True)
+    if ta >= h - 0.05:
+        label(cv, UX, 800, "HEUTE.", GREEN, YELLOW, 110, k=seg(ta, h - 0.05, h + 0.2) * 1.0)
 
 
 def s_final(cv, t, dur, ta):
