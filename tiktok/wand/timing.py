@@ -1,30 +1,54 @@
-"""Phrase timings for '11 Millionen in der Wand'. PLANNED timing (estimated from syllables) until the
-ElevenLabs take arrives; then RAW is replaced by the real phrase times from speech recognition.
+"""Phrase timings for '11 Millionen in der Wand'. Real phrase times from speech recognition;
+pauses are tightened (each phrase re-placed with short gaps).
 """
-import os
-import re as _re
 
-TEMPO = 1.0
+TEMPO = 1.05
 VOICE = "audio/voice_helmut.mp3"
 PAD_IN, PAD_OUT = 0.06, 0.10
-GAP_SAME, GAP_SCENE = 0.3, 0.45
+GAP_SAME, GAP_SCENE = 0.2, 0.35
 
 
-def _planned():
-    paras = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "vo.txt"), encoding="utf-8").read().strip().split("\n\n")
-    out, t = [], 0.0
-    for s, p in enumerate(paras):
-        for ph in _re.findall(r"[^.:?!]+[.:?!]", p.replace("\n", " ")):
-            ph = ph.strip()
-            syl = sum(max(1, len(_re.findall(r"[aeiouyäöü]+", w.lower()))) for w in ph.split())
-            d = 0.19 * syl + 0.15
-            out.append((round(t, 2), round(t + d, 2), s, ph))
-            t += d + 0.35
-    return out
-
-
-RAW = _planned()
-EXTRA_GAP = {"Stopp.": 0.25}
+# (start, end, sequence index, text) in the ORIGINAL recording (ElevenLabs take, 68.4 s)
+RAW = [
+    (0.00, 0.99, 0, "Stell dir vor:"),
+    (1.51, 5.31, 0, "In der Wand deiner Wohnung sind elf Millionen Euro versteckt."),
+    (5.79, 9.06, 0, "Und du schläfst seit drei Jahren direkt daneben."),
+    (9.97, 11.88, 1, "Alles beginnt mit einem Nagel."),
+    (12.45, 14.03, 1, "Du willst nur ein Bild aufhängen."),
+    (14.50, 15.70, 1, "Die Wand klingt hohl."),
+    (16.25, 16.94, 1, "Du bohrst."),
+    (17.44, 20.05, 1, "Und plötzlich fällt ein Geldschein heraus."),
+    (20.57, 21.80, 2, "Du reißt die Tapete ab."),
+    (22.20, 22.75, 2, "Bündel."),
+    (23.00, 23.62, 2, "Hunderte."),
+    (24.18, 25.84, 2, "Du zählst die ganze Nacht."),
+    (26.35, 28.08, 2, "Elf Millionen Euro."),
+    (28.75, 30.80, 3, "Doch auf einem Bündel klebt ein Zettel:"),
+    (31.26, 32.16, 3, "Nicht anfassen."),
+    (32.47, 33.37, 3, "Wir kommen zurück."),
+    (33.79, 34.29, 3, "Datum:"),
+    (34.53, 34.99, 3, "morgen."),
+    (35.75, 36.22, 4, "Stopp."),
+    (36.78, 37.79, 4, "Jetzt überleg mal."),
+    (38.20, 40.10, 4, "Wer hat vor dir hier gewohnt?"),
+    (40.69, 41.82, 5, "Du suchst im Internet."),
+    (42.24, 43.60, 5, "Und findest einen Artikel:"),
+    (44.06, 45.89, 5, "Bankraub, vor drei Jahren."),
+    (46.26, 46.87, 5, "Die Beute:"),
+    (47.12, 48.05, 5, "elf Millionen."),
+    (48.42, 49.32, 5, "Nie gefunden."),
+    (49.85, 50.53, 5, "Der Täter:"),
+    (50.92, 51.95, 5, "dein Vormieter."),
+    (52.84, 53.89, 6, "Dann klingelt es."),
+    (54.22, 54.91, 6, "Zweimal."),
+    (55.44, 57.31, 6, "Durch den Spion siehst du einen Mann."),
+    (57.72, 59.09, 6, "Er hält einen Schlüssel hoch."),
+    (59.49, 61.53, 6, "Den Schlüssel zu deiner Wohnung."),
+    (62.22, 63.45, 7, "Rufst du die Polizei?"),
+    (63.88, 66.38, 7, "Oder nimmst du das Geld und verschwindest?"),
+    (66.90, 68.24, 7, "Schreib es in die Kommentare."),
+]
+EXTRA_GAP = {"Stopp.": 0.25, "morgen.": 0.25, "dein Vormieter.": 0.3, "Den Schlüssel zu deiner Wohnung.": 0.2}
 
 END_HOLD = 1.0
 

@@ -295,16 +295,16 @@ def s_door(cv, t, dur, ta):
         door(cv, 330, 560, 750, 1310)
         hero(cv, 200, 1780, 0.75, "shock", "down", blink=blink_at(ta), look=(1, 0))
         if ta >= cue("Dann klingelt"):
-            label(cv, 540, 470 + 0, "DING DONG", YELLOW, INK, 54, k=pop(ta, "Dann klingelt"))
+            label(cv, 870, 760, "DING DONG", YELLOW, INK, 44, k=pop(ta, "Dann klingelt"))
         if ta >= cue("Zweimal"):
-            label(cv, 840, 640, "×2", RED, WHITE, 60, k=pop(ta, "Zweimal"))
+            label(cv, 870, 880, "×2", RED, WHITE, 60, k=pop(ta, "Zweimal"))
         return
     # through the peephole: fisheye circle, the previous tenant holds up a key
     cv.rect((0, 0, W, H), (200, 196, 186))
     cv.rect((0, 1350, W, H), (120, 110, 100))
-    vormieter(cv, UX, 1700, 0.95, "smug", "up" if ta >= cue("Er hält") else "down", blink=blink_at(ta))
+    vormieter(cv, UX, 1600, 0.9, "smug", "up" if ta >= cue("Er hält") else "down", blink=blink_at(ta))
     if ta >= cue("Er hält"):
-        key_icon(cv, 735, 790, 1.1)
+        key_icon(cv, 725, 700, 1.1)
     mask = Image.new("L", cv.img.size, 255)
     ImageDraw.Draw(mask).ellipse([v * SS for v in (40, 380, 1040, 1380)], fill=0)
     cv.img.paste((10, 10, 14), (0, 0), mask)
