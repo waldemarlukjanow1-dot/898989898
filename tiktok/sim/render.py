@@ -8,8 +8,7 @@ from sim import W, H, CX, CY, R, blade_halfwidth
 
 SS = 2
 FD = "/usr/share/fonts/opentype/inter/"
-PALETTE = [(255, 43, 214), (255, 230, 0), (61, 92, 255), (92, 255, 200), (255, 122, 184), (180, 120, 255),
-           (255, 255, 255)]
+PALETTE = [(255, 43, 214), (255, 230, 0), (61, 92, 255), (92, 255, 200), (255, 122, 184), (170, 110, 255)]
 GOLD = (201, 168, 90)
 
 
@@ -27,13 +26,8 @@ def _background():
 BG = _background()
 
 
-def ball_colors(col, born, t, last_stage_mix=True):
-    base = np.array(PALETTE, dtype=np.float32)[np.clip(col, 0, len(PALETTE) - 1)]
-    if last_stage_mix:   # final generation: violet/blue/white mix like the reference finale
-        m = col >= len(PALETTE) - 1
-        if m.any():
-            idx = (np.arange(len(col))[m] * 2654435761) % 3
-            base[m] = np.array([(180, 120, 255), (90, 140, 255), (255, 255, 255)], np.float32)[idx]
+def ball_colors(col, born, t):
+    base = np.array(PALETTE, dtype=np.float32)[np.asarray(col) % len(PALETTE)]
     age = np.clip((t - born) / 0.45, 0, 1)[:, None]          # white-hot -> cools into its colour
     return base * age + 255 * (1 - age)
 
@@ -87,15 +81,19 @@ def fmt(n):
     return f"{n:,}".replace(",", ".")
 
 
-def render_frame(fr, t, events, goal, rb, hook="WARTE AUF DIE EXPLOSION…", hook_end=2.0):
+def render_frame(fr, t, events, goal, rb):
     # ---- balls (supersampled)
     layer = Image.new("RGB", (W * SS, H * SS), (0, 0, 0))
     d = ImageDraw.Draw(layer)
     pos = fr["pos"]
     cols = ball_colors(fr["col"], fr["born"], t).astype(np.uint8)
-    radii = np.where(fr["col"] == 0, rb * 2.2, rb) * SS     # the single start ball is drawn bigger
+    radii = np.full(len(pos), (rb * 2.2 if len(pos) == 1 else rb) * SS)   # a lone ball is drawn bigger
     for (x, y), c, r in zip(pos * SS, cols, radii):
         d.ellipse((x - r, y - r, x + r, y + r), fill=tuple(int(v) for v in c))
+    for e in events:   # white flash where the single ball is born after the implosion
+        if e["kind"] == "pop" and 0 <= t - e["t"] < 0.35:
+            rr = (10 + 60 * (1 - (t - e["t"]) / 0.35)) * SS
+            d.ellipse((e["x"] * SS - rr, e["y"] * SS - rr, e["x"] * SS + rr, e["y"] * SS + rr), fill=(255, 255, 255))
     small = layer.resize((W, H), Image.BILINEAR)
     arr = np.asarray(small, dtype=np.float32)
     # glow: blurred copy, added
@@ -104,8 +102,8 @@ def render_frame(fr, t, events, goal, rb, hook="WARTE AUF DIE EXPLOSION…", hoo
     # extra bloom right after an explosion
     bloom = 0.0
     for e in events:
-        if 0 <= t - e["t"] < 0.6:
-            bloom = max(bloom, 1 - (t - e["t"]) / 0.6)
+        if e["kind"] in ("bite", "pop") and 0 <= t - e["t"] < 0.6:
+            bloom = max(bloom, (1 - (t - e["t"]) / 0.6) * (1.0 if e["kind"] == "bite" else 0.6))
     dens = 1.0 / (1.0 + len(pos) / 1500.0)          # less glow when the arena is crowded
     g2 = np.clip(glow * (1.2 + 1.2 * bloom) * dens, 0, 255)
     base = np.clip(BG + arr, 0, 255)
@@ -118,41 +116,12 @@ def render_frame(fr, t, events, goal, rb, hook="WARTE AUF DIE EXPLOSION…", hoo
     sd.ellipse(((CX - R) * SS, (CY - R) * SS, (CX + R) * SS, (CY + R) * SS), outline=(235, 235, 240, 230), width=3 * SS)
     for ang in (fr["a1"], fr["a2"]):
         draw_blade(sd, ang, LABEL)
-    for ang in (fr["a1"], fr["a2"]):
-        paste_label(st, ang, LABEL)
     sd = ImageDraw.Draw(st)
     sd.ellipse(((CX - 9) * SS, (CY - 9) * SS, (CX + 9) * SS, (CY + 9) * SS), fill=(10, 10, 12), outline=(200, 200, 205), width=2 * SS)
     st = st.resize((W, H), Image.LANCZOS)
     img.paste(st, (0, 0), st)
 
-    # ---- HUD
+    # ---- only text: small thin "follow for more"
     hd = ImageDraw.Draw(img, "RGBA")
-    hd.text((CX, 262), f"{fr['rpm']}  U / M I N", font=font(24, "Medium"), fill=(95, 95, 102), anchor="ms")
-    if t < hook_end:
-        a = int(255 * min(1, (hook_end - t) / 0.2))
-        hd.text((CX, 360), hook, font=font(54, "Black"), fill=(255, 255, 255, a), anchor="ms")
-    hd.text((CX, CY - R - 22), "F O L L O W", font=font(24, "Medium"), fill=(110, 110, 118), anchor="ms")
-    total = len(pos)
-    done = total >= goal
-    num = fmt(total)
-    fnum = font(92, "Thin")
-    fsmall = font(40, "Light")
-    wnum = hd.textlength(num, font=fnum)
-    wgoal = hd.textlength(f" / {fmt(goal)}", font=fsmall)
-    x0 = CX - (wnum + wgoal) / 2
-    yb = CY + R + 120
-    hd.text((x0, yb), num, font=fnum, fill=(255, 214, 90) if done else (255, 255, 255), anchor="ls")
-    hd.text((x0 + wnum, yb), f" / {fmt(goal)}", font=fsmall, fill=(150, 150, 158), anchor="ls")
-    for e in events:   # blue +N next to the counter
-        if 0 <= t - e["t"] < 0.8:
-            a = int(255 * min(1, (0.8 - (t - e["t"])) / 0.2))
-            hd.text((x0 + wnum + wgoal + 8, yb - 62), f"+{fmt(e['new'] - e['caught'])}", font=font(30, "SemiBold"),
-                    fill=(74, 163, 255, a), anchor="ls")
-    # progress bar
-    bw = 520
-    hd.rectangle((CX - bw / 2, yb + 26, CX + bw / 2, yb + 28), fill=(60, 60, 66))
-    hd.rectangle((CX - bw / 2, yb + 26, CX - bw / 2 + bw * min(1, total / goal), yb + 28),
-                 fill=(255, 214, 90) if done else (74, 163, 255))
-    if done:
-        hd.text((CX, yb + 86), "Z I E L   E R R E I C H T", font=font(28, "SemiBold"), fill=(255, 214, 90), anchor="ms")
+    hd.text((CX, CY - R - 24), "f o l l o w   f o r   m o r e", font=font(26, "Light"), fill=(125, 125, 132), anchor="ms")
     return img
