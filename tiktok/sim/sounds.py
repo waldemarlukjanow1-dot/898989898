@@ -131,7 +131,7 @@ def glass(res, m):
 
 
 # ------------------------------------------------------------------ 3 PLOP / BUBBLES
-def bubbles(res, m):
+def bubbles(res, m, gain=1.0, reverb=True):
     rng = m.rng
     def bubble(f0, d):
         t = tt(d)
@@ -139,18 +139,19 @@ def bubbles(res, m):
         return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * (5 / d)) * np.minimum(1, t / 0.002)
     bank = [bubble(f, d) for f in (320, 420, 520, 640, 780, 920) for d in (0.05, 0.07, 0.09)]
     for t0 in contact_times(res, 0.03, 1.5):
-        m.add(bank[rng.integers(len(bank))], t0, 0.08, rng.uniform(-0.6, 0.6))
+        m.add(bank[rng.integers(len(bank))], t0, 0.08 * gain, rng.uniform(-0.6, 0.6))
     for s, e in bites(res):
         t = tt(0.35)                                     # big water-drop "plop"
         f = 160 + 700 * (t / 0.35) ** 1.5
         plop = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 11) * np.minimum(1, t / 0.003)
-        m.add(plop, e["t"], 0.5 + 0.3 * s, pan_of(e))
+        m.add(plop, e["t"], (0.5 + 0.3 * s) * gain, pan_of(e))
         for j in range(int(8 + 22 * s)):                 # bubble cascade
-            m.add(bank[rng.integers(len(bank))], e["t"] + 0.05 + rng.exponential(0.12), 0.12,
+            m.add(bank[rng.integers(len(bank))], e["t"] + 0.05 + rng.exponential(0.12), 0.12 * gain,
                   rng.uniform(-0.8, 0.8))
     special(res, m, rise=lambda t, L: np.sin(2 * np.pi * np.cumsum(200 + 800 * (t / L)) / SR) * (t / L) ** 2,
             pop_f=700)
-    m.reverb(0.22, 1.2, 3.5)
+    if reverb:
+        m.reverb(0.22, 1.2, 3.5)
 
 
 # ------------------------------------------------------------------ 4 KALIMBA (wood/metal tines)
@@ -232,22 +233,38 @@ def special(res, m, rise, pop_f):
                     break
 
 
-def rain_meow(res, m):
-    """Regen-Design + das Miauen des Nutzers (assets/deep_meow.mp3) bei jedem Biss der Klingen."""
+def load_meow():
+    """The user's sound (assets/deep_meow.mp3 -> build/meow.wav), silence trimmed, soft fades, normalised."""
     a, sr = sf.read("build/meow.wav")
     on = np.where(np.abs(a) > 0.01)[0]
     a = a[max(0, on[0] - int(0.005 * SR)): on[-1] + int(0.05 * SR)]
     fade = int(0.01 * SR)
     a[:fade] *= np.linspace(0, 1, fade)
     a[-fade * 4:] *= np.linspace(1, 0, fade * 4)
-    a = a / np.abs(a).max()
-    soft_rain(res, m, bite_gain=0.35)
+    return a / np.abs(a).max()
+
+
+def add_meows(res, m):
+    a = load_meow()
     for s, e in bites(res):
         m.add(a, e["t"], 0.55 + 0.35 * s, pan_of(e) * 0.5)
+
+
+def rain_meow(res, m):
+    """Regen-Design + das Miauen des Nutzers bei jedem Biss der Klingen."""
+    soft_rain(res, m, bite_gain=0.35)
+    add_meows(res, m)
     m.reverb(0.22, 1.6, 3.0)
 
 
-DESIGNS = {"1_jelly": jelly, "2_glas": glass, "3_plopp": bubbles, "4_kalimba": kalimba, "5_regen": soft_rain, "6_regen_miau": rain_meow}
+def plopp_meow(res, m):
+    """Plopp/Blasen-Design (etwas lauter als zuvor) + Miauen bei jedem Biss."""
+    bubbles(res, m, gain=1.7, reverb=False)
+    add_meows(res, m)
+    m.reverb(0.22, 1.2, 3.5)
+
+
+DESIGNS = {"1_jelly": jelly, "2_glas": glass, "3_plopp": bubbles, "4_kalimba": kalimba, "5_regen": soft_rain, "6_regen_miau": rain_meow, "7_plopp_miau": plopp_meow}
 
 
 def normalise(src, dst, target=-14.0):

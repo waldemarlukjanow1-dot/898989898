@@ -16,9 +16,9 @@ import render
 import sim
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "output/simulation_loop.mp4"
-SOUND = "6_regen_miau"                                   # design from sounds.py
+SOUND = "7_plopp_miau"                                   # design from sounds.py
 # v2: bigger balls, faster blades. 32 x 1.8 s = 57.6 s, seamless loop, 31 bites, goal 3000
-CFG = dict(period=1.8, n_periods=32, rb=6.0, seed=11, targets=sim.gentle_targets(31, first=10, last=3000))
+CFG = dict(period=1.8, n_periods=32, rb=6.0, seed=21, targets=sim.gentle_targets(31, first=10, last=3000))
 SR = 48000
 STATE = "build/sim.pkl"
 
@@ -111,6 +111,10 @@ def _init():
 def _frame(f):
     t = f / _RES["fps"]
     return render.render_frame(_RES["frames"][f], t, _RES["events"], _RES["goal"], _RES["rb"]).tobytes()
+
+
+# colour order for this video (index 0 must stay magenta: the start ball of the loop)
+render.PALETTE = [(255, 43, 214), (92, 255, 200), (255, 230, 0), (170, 110, 255), (61, 92, 255), (255, 122, 184)]
 
 
 def main():
