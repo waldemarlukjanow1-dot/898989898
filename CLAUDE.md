@@ -73,3 +73,8 @@ Der Nutzer hat 3 virale Referenzvideos geliefert (Physik-Simulationen „Hypnoba
 Kernregeln für alle Videos: erster Payoff ≤ 1 s · ein sichtbares Ziel oder eine Frage, die das Ende beantwortet ·
 alle 2,5–4 s ein größeres Ereignis · zählbare Steigerung (+N, neue Farbe) · Stille als Kontrast vor jedem Schlag ·
 minimalistisches HUD · Ende löst auf und loopt zum Anfang. Ideen des Nutzers aktiv verbessern, nicht blind umsetzen.
+
+## Beschreibung zu jedem fertigen Video (Wunsch 22.11.2026)
+Sobald ein Video fertig ist, gebe ich **direkt** eine passende TikTok-Beschreibung mit **genau 5 Hashtags** mit.
+Jede Beschreibung muss **anders** sein (neuer Einstieg, neue Frage, andere Tag-Kombination). Alle bisherigen
+Beschreibungen stehen in `tiktok/BESCHREIBUNGEN.md`. Vorher dort nachsehen, danach die neue eintragen.
