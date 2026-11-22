@@ -63,3 +63,13 @@ Der Nutzer hat bei „Der Zeuge“ nicht verstanden, worum es geht. Deshalb ab s
 - Name: **Du-Geschichten 🎭** (@du.geschichten), Profilbild: `tiktok/profilbild/profilbild_B_pink.png`
 - Bio: „Jede Geschichte passiert DIR. 🎭 / Teil 2 entscheidest du in den Kommentaren 👇“
 - Hashtags: 3 Themen-Tags + #storytime #duform #geschichte #plottwist #spannung #fürdich #fyp
+
+## REFERENZ-SYSTEM (ab 22.11.2026) – vor JEDER Videoproduktion lesen
+Der Nutzer hat 3 virale Referenzvideos geliefert (Physik-Simulationen „Hypnoball“: Kreis, rotierender Klingen-„Kiefer“,
+1 Ball vervielfacht sich explosionsartig, Zähler „1 / 45000“, Stille + Bass-Schlag). Analyse und Produktionssystem:
+- `tiktok/referenz/ANALYSE.md`: vollständige Einzel- und Vergleichsanalyse (Hook, Takt, Bild, Ton, Kennzahlen)
+- `tiktok/referenz/PRODUKTION.md`: verbindliche Arbeitsanweisung + Checkliste. Teil A = **STIL 4 Simulation**,
+  Teil B = Übertragung auf die Du-Geschichten (STIL 3).
+Kernregeln für alle Videos: erster Payoff ≤ 1 s · ein sichtbares Ziel oder eine Frage, die das Ende beantwortet ·
+alle 2,5–4 s ein größeres Ereignis · zählbare Steigerung (+N, neue Farbe) · Stille als Kontrast vor jedem Schlag ·
+minimalistisches HUD · Ende löst auf und loopt zum Anfang. Ideen des Nutzers aktiv verbessern, nicht blind umsetzen.
