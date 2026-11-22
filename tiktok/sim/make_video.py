@@ -16,7 +16,9 @@ import render
 import sim
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "output/simulation_loop.mp4"
-CFG = dict(period=2.6, n_periods=22, rb=3.8, seed=7)     # 22 x 2.6 s = 57.2 s, seamless loop
+SOUND = "6_regen_miau"                                   # design from sounds.py
+# v2: bigger balls, faster blades. 32 x 1.8 s = 57.6 s, seamless loop, 31 bites, goal 3000
+CFG = dict(period=1.8, n_periods=32, rb=6.0, seed=11, targets=sim.gentle_targets(31, first=10, last=3000))
 SR = 48000
 STATE = "build/sim.pkl"
 
@@ -117,11 +119,13 @@ def main():
     json.dump(res["events"], open("build/events.json", "w"), indent=1)
     for e in res["events"]:
         print(f"bite {e['stage']} @ {e['t']:.2f}s caught {e['caught']} -> {e['total']}")
-    sound(res, "build/mix.wav")
+    import sounds
+    sounds.build(SOUND, res)
+    subprocess.run(["cp", f"build/snd_{SOUND}.wav", "build/mix.wav"], check=True)
     nf = len(res["frames"])
     cmd = ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{sim.W}x{sim.H}",
            "-r", str(res["fps"]), "-i", "-", "-i", "build/mix.wav", "-c:v", "libx264", "-preset", "medium",
-           "-b:v", "14M", "-maxrate", "18M", "-bufsize", "28M", "-pix_fmt", "yuv420p", "-profile:v", "high",
+           "-b:v", "11M", "-maxrate", "14M", "-bufsize", "22M", "-pix_fmt", "yuv420p", "-profile:v", "high",
            "-movflags", "+faststart", "-c:a", "aac", "-b:a", "192k", "-shortest", OUT]
     ff = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     with Pool(4, initializer=_init) as pool:
