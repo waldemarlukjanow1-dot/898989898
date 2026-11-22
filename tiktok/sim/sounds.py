@@ -188,7 +188,7 @@ def kalimba(res, m):
 
 
 # ------------------------------------------------------------------ 5 SOFT RAIN / ASMR TAPPING
-def soft_rain(res, m):
+def soft_rain(res, m, bite_gain=1.0):
     rng = m.rng
     def tap(center):
         n = int(0.02 * SR)
@@ -205,7 +205,7 @@ def soft_rain(res, m):
         sub = np.sin(2 * np.pi * 70 * t) * np.exp(-t * 6) * np.minimum(1, t / 0.01)
         ch = chord_at(res, e["t"] + 0.01)
         shimmer = sum(np.sin(2 * np.pi * f * 4 * t) for f in ch) * np.exp(-t * 3) * np.minimum(1, t / 0.08) * 0.06
-        m.add(fw + 0.6 * sub + shimmer, e["t"], 0.35 + 0.3 * s, pan_of(e))
+        m.add(fw + 0.6 * sub + shimmer, e["t"], (0.35 + 0.3 * s) * bite_gain, pan_of(e))
     t = tt(res["duration"])                               # very soft warm bed (loop-safe: whole length)
     bed = (np.sin(2 * np.pi * 132 * t) + 0.5 * np.sin(2 * np.pi * 198 * t)) * (0.7 + 0.3 * np.sin(2 * np.pi * t / 5.2))
     m.add(bed, 0.0, 0.012)
@@ -232,7 +232,22 @@ def special(res, m, rise, pop_f):
                     break
 
 
-DESIGNS = {"1_jelly": jelly, "2_glas": glass, "3_plopp": bubbles, "4_kalimba": kalimba, "5_regen": soft_rain}
+def rain_meow(res, m):
+    """Regen-Design + das Miauen des Nutzers (assets/deep_meow.mp3) bei jedem Biss der Klingen."""
+    a, sr = sf.read("build/meow.wav")
+    on = np.where(np.abs(a) > 0.01)[0]
+    a = a[max(0, on[0] - int(0.005 * SR)): on[-1] + int(0.05 * SR)]
+    fade = int(0.01 * SR)
+    a[:fade] *= np.linspace(0, 1, fade)
+    a[-fade * 4:] *= np.linspace(1, 0, fade * 4)
+    a = a / np.abs(a).max()
+    soft_rain(res, m, bite_gain=0.35)
+    for s, e in bites(res):
+        m.add(a, e["t"], 0.55 + 0.35 * s, pan_of(e) * 0.5)
+    m.reverb(0.22, 1.6, 3.0)
+
+
+DESIGNS = {"1_jelly": jelly, "2_glas": glass, "3_plopp": bubbles, "4_kalimba": kalimba, "5_regen": soft_rain, "6_regen_miau": rain_meow}
 
 
 def normalise(src, dst, target=-14.0):
