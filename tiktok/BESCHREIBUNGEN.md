@@ -10,3 +10,4 @@
 | 23.11.2026 | sim/output/simulation_v5_beat.mp4 | Every chomp is ON the beat 🥁 Turn the sound up and tell me: does the drop at 0:32 hit or what? 🔊 #beat #rhythm #physicssimulation #satisfyingsounds #edm |
 | 23.11.2026 | sim/output/simulation_v6_trapbeat.mp4 | The blades only clap on the kick 🔪🥁 Watch how the balls multiply with every hit… which part goes hardest? Drop the timestamp 👇 #trapbeat #beatsync #physics #oddlysatisfying #808 |
 | 23.11.2026 | sim/output/simulation_v7_slowbeat.mp4 | Slowed down, turned calm 🌙 Every kick, the blades meet… and more balls appear. Perfect to unwind before bed – who's watching this at night? 💤 #slowedreverb #calmvibes #physicsart #satisfyingloop #chill |
+| 23.11.2026 | sim/output/simulation_v8_neon.mp4 | Rainbow ring, neon blades, 12 colours of pure chaos 🌈⚔️ Which colour would you pick as your ball? Tell me below 🎨 #neon #rainbow #colorful #physicsvideo #satisfyingart |
