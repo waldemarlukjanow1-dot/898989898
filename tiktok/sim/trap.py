@@ -30,16 +30,18 @@ GOAL = 1600
 ON = json.load(open("build/trap_onsets.json"))
 PER = ON["period"]
 FIRST_KICK = min(k for k in ON["kicks"] if k > 23.5)
-SEG0 = FIRST_KICK - 2 * PER                  # 2 silent beats before the first kick (drop-in hook)
-T = 160 * PER                                # 40 bars
+SLOW = 2.0                                   # half tempo: 162 -> 81 BPM (calmer, "slowed + reverb")
+SEG0 = FIRST_KICK - 1 * PER                  # 1 silent beat (2 at half tempo) before the first kick
+T_ORIG = 80 * PER                            # 20 original bars ...
+T = T_ORIG * SLOW                            # ... = 59.3 s at half tempo
 blade_halfwidth = beat.blade_halfwidth
 
 
 def meetings():
-    ks = [k - SEG0 for k in ON["kicks"] if SEG0 - 1e-3 <= k < SEG0 + T - 1e-3]
+    ks = [(k - SEG0) * SLOW for k in ON["kicks"] if SEG0 - 1e-3 <= k < SEG0 + T_ORIG - 1e-3]
     out = []
     for k in ks:
-        if not out or k - out[-1] > 0.3:
+        if not out or k - out[-1] > 0.7:            # calm: no blade hits closer than 0.7 s
             out.append(k)
     if len(out) % 2:                         # even count -> blades end exactly where they started
         gaps = np.diff(out)
@@ -49,7 +51,7 @@ def meetings():
 
 MEET = meetings()
 # implosion on the meeting closest to 1.25 s before the loop point; meetings after it are dry
-IMP = int(np.argmin([abs(m - (T - 1.25)) for m in MEET]))
+IMP = int(np.argmin([abs(m - (T - 1.4)) for m in MEET]))
 
 
 def axis(t):
@@ -66,7 +68,7 @@ def jaw(t):
     else:
         t0, t1, k = MEET[i - 1], MEET[i], i - 1
     u = (t - t0) / (t1 - t0)
-    o = 180.0 * (k + u ** 1.4)                          # speeds into every hit
+    o = 180.0 * (k + u ** 1.2)                          # gentle acceleration into every hit
     c = axis(t)
     return c - o, c + o
 
@@ -223,19 +225,37 @@ def simulate_loop(log=print):
 
 # ------------------------------------------------------------------ audio: the user's beat, drums only
 def make_audio(path):
+    """Half-time beat without smearing: cut the drum stem at every onset and place each slice at twice the time.
+    Then a soft reverb fills the gaps ("slowed + reverb"). Circular buffer -> loops seamlessly."""
+    import librosa
     a, sr = sf.read("build/sep/htdemucs/trap_beat/drums.wav")
-    seg = a[int(round(SEG0 * sr)): int(round((SEG0 + T) * sr))].copy()
+    mono = a.mean(1).astype(np.float32)
+    on = librosa.onset.onset_detect(y=mono, sr=sr, hop_length=256, backtrack=True, units="samples", delta=0.07)
+    s0, s1 = int(round(SEG0 * sr)), int(round((SEG0 + T_ORIG) * sr))
+    cuts = [s0] + [int(o) for o in on if s0 < o < s1] + [s1]
     n = int(round(T * sr))
-    seg = np.pad(seg, ((0, max(0, n - len(seg))), (0, 0)))[:n]
-    fade = int(0.03 * sr)
-    seg[-fade:] *= np.linspace(1, 0, fade)[:, None]
-    sf.write("build/trap_seg.wav", seg, sr)
-    print("audio", f"{sounds.normalise('build/trap_seg.wav', path):.1f} LUFS")
+    m = sounds.Mix(T)
+    m.n = n
+    L, Rr = np.zeros(n), np.zeros(n)
+    fade = int(0.006 * sr)
+    for c0, c1 in zip(cuts[:-1], cuts[1:]):
+        sl = a[c0:c1].copy()
+        if len(sl) > 2 * fade:
+            sl[-fade:] *= np.linspace(1, 0, fade)[:, None]
+        dst = int(round((c0 - s0) / sr * SLOW * sr))
+        e = min(n, dst + len(sl))
+        L[dst:e] += sl[: e - dst, 0]
+        Rr[dst:e] += sl[: e - dst, 1]
+    m.L, m.R = L, Rr
+    m.reverb(0.3, 2.0, 2.4)
+    peak = max(np.abs(m.L).max(), np.abs(m.R).max())
+    sf.write("build/trap_seg.wav", np.stack([m.L, m.R], 1) / peak * 0.9, sr)
+    print("slices", len(cuts) - 1, "audio", f"{sounds.normalise('build/trap_seg.wav', path):.1f} LUFS")
 
 
 # ------------------------------------------------------------------ video
 render.blade_halfwidth = blade_halfwidth
-render.PALETTE = [(255, 43, 214), (255, 230, 0), (0, 229, 255), (255, 90, 60), (124, 255, 92), (170, 110, 255)]
+render.PALETTE = [(255, 43, 214), (120, 200, 255), (255, 200, 90), (160, 120, 255), (90, 255, 190), (255, 140, 170)]
 _RES = None
 
 
