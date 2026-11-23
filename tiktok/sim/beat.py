@@ -107,7 +107,7 @@ def simulate(init=None, seed=5, substeps=6, iters=2, gravity=900.0, implode_dur=
     events, frames = [], []
     imp = None
     nb = 0
-    sched_t = np.array([e["t"] for e in SCHED])
+    sched_t = np.array([e["t"] for e in SCHED]) - 0.05   # catch 50 ms before full closure (ball still inside)
     a1, a2 = jaw(0.0)
     for f in range(nframes):
         t = f * dt
@@ -167,7 +167,7 @@ def simulate(init=None, seed=5, substeps=6, iters=2, gravity=900.0, implode_dur=
                 if out.any():
                     pos[out] = (CX, CY) + rel[out] / dist[out, None] * (R - rb)
             # scheduled bite inside this substep?
-            for j in np.where((sched_t > ts0 - 1e-9) & (sched_t <= ts1 + 1e-9))[0]:
+            for j in np.where((sched_t > ts0 + 1e-9) & (sched_t <= ts1 + 1e-9))[0]:
                 ev = SCHED[j]
                 if ev["kind"] == "implode" and imp is None and len(pos):
                     pt = np.array([CX, CY + rb + 14.0])
@@ -184,15 +184,18 @@ def simulate(init=None, seed=5, substeps=6, iters=2, gravity=900.0, implode_dur=
                 phi = np.degrees(np.arctan2(rel[:, 1], rel[:, 0]))
                 dist = np.sqrt((rel * rel).sum(1))
                 dphi = np.abs(((phi - ev["c"]) + 180) % 360 - 180)
-                caught = np.where((dphi < 16.0) & (dist > 0.12 * R))[0]
-                if not len(caught):
-                    events.append(dict(t=ev["t"], kind="bite", x=CX + math.cos(math.radians(ev["c"])) * 0.7 * R,
-                                       y=CY + math.sin(math.radians(ev["c"])) * 0.7 * R, new=0, caught=0,
-                                       total=int(len(pos))))
-                    continue
-                keep = np.setdiff1d(np.arange(len(pos)), caught)
-                n_new = max(len(caught) + 1, target(ev["t"]) - len(keep))
-                cen = pos[caught].mean(0)
+                ca, cb = jaw(ts1)
+                o_now = abs(((cb - ca) % 360) / 2)
+                caught = np.where((dphi < max(16.0, o_now + 10.0)) & (dist > 0.12 * R))[0]
+                if len(caught):
+                    keep = np.setdiff1d(np.arange(len(pos)), caught)
+                    n_new = max(len(caught) + 1, target(ev["t"]) - len(keep))
+                    cen = pos[caught].mean(0)
+                else:                         # empty bite: the jaw spits out fresh balls at the bite point
+                    keep = np.arange(len(pos))
+                    n_new = max(2, target(ev["t"]) - len(keep))
+                    cen = np.array([CX + math.cos(math.radians(ev["c"])) * 0.72 * R,
+                                    CY + math.sin(math.radians(ev["c"])) * 0.72 * R])
                 rad = math.sqrt(n_new * (2 * rb) ** 2 * 0.33 / math.pi) + 10
                 rel_c = cen - (CX, CY)
                 dc = np.linalg.norm(rel_c)
