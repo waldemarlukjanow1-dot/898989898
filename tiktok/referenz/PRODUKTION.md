@@ -42,6 +42,13 @@ Varianten, die das Format frisch halten, ohne das Set zu wechseln:
 - **Länge:** 30–45 s (Referenz 40 s). Das ergibt 12–16 Zyklen. Vor dem Finale kommt eine bewusst längere Anlaufphase (~4 s, das Aufladen wird hörbar dichter).
 - **Finale:** der größte Biss, Kreis voll, Zähler erreicht das Ziel (bzw. die Schätzfrage wird mit großer Endzahl aufgelöst). Danach 1–1,5 s Ruhe. Das **letzte Bild ähnelt dem ersten** (leerer Kreis bzw. 1 Ball), damit das Video loopt und nochmal geschaut wird.
 
+### A3b. Früh-Chaos-Kurve (Wunsch 23.11.2026, gilt ab jetzt)
+Der Zuschauer muss **in den ersten 6 Sekunden** Chaos und Masse sehen, nicht erst in der Mitte.
+- Biss 1 (≤ 1 s): **1 → 80** Bälle. Biss 2: 300. Biss 3: 650. Biss 4 (~6 s): **1.000**. Der Kreis ist sichtbar voller Action.
+- Danach gleichmäßig **~+90 Bälle pro Biss** bis zum Ziel (~3.500 bei großen Bällen). Jeder Biss bleibt sichtbar.
+- Die ersten 4 Explosionen sind **1,8× wuchtiger** (Bälle fliegen schneller auseinander).
+- Code: `sim.hook_targets(n)` statt `gentle_targets`.
+
 ### A4. Bildgestaltung (Design-Tokens)
 - 1080×1920, **60 fps**, eine statische Einstellung, **keine Schnitte, kein Zoom, kein Wackeln**.
 - Hintergrund `#000000` mit radialer Aufhellung zur Mitte (max. `#141418`).

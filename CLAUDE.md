@@ -73,6 +73,9 @@ Der Nutzer hat 3 virale Referenzvideos geliefert (Physik-Simulationen „Hypnoba
 Kernregeln für alle Videos: erster Payoff ≤ 1 s · ein sichtbares Ziel oder eine Frage, die das Ende beantwortet ·
 alle 2,5–4 s ein größeres Ereignis · zählbare Steigerung (+N, neue Farbe) · Stille als Kontrast vor jedem Schlag ·
 minimalistisches HUD · Ende löst auf und loopt zum Anfang. Ideen des Nutzers aktiv verbessern, nicht blind umsetzen.
+**Simulationen (Stand 23.11.):** Früh-Chaos-Kurve (`sim.hook_targets`): 1 → 80 → 300 → 650 → 1.000 Bälle in den
+ersten ~6 s, danach gleichmäßig wachsen. Große Bälle (r=6), schnelle Klingen (Biss alle 1,8 s), ~57,6 s, nahtloser
+Implosions-Loop, keine Schrift außer „follow for more“, Sound: Plopp + Miauen (Nutzer-Datei) bei jedem Biss.
 
 ## Beschreibung zu jedem fertigen Video (Wunsch 22.11.2026)
 Sobald ein Video fertig ist, gebe ich **direkt** eine passende TikTok-Beschreibung **auf Englisch** mit **genau 5 Hashtags** mit.

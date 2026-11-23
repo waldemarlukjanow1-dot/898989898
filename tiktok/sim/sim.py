@@ -35,6 +35,15 @@ def gentle_targets(n, first=12, last=6000):
     return out
 
 
+def hook_targets(n, early=(80, 300, 650, 1000), last=3500):
+    """Früh-Chaos-Kurve: riesige Sprünge in den ersten Bissen (Kreis nach ~6 s voll Action),
+    danach gleichmäßiges Wachstum bis zum Ziel (jeder Biss bringt sichtbar neue Bälle)."""
+    early = list(early)
+    rest = n - len(early)
+    step = (last - early[-1]) / rest
+    return early + [int(round(early[-1] + step * (k + 1))) for k in range(rest)]
+
+
 def simulate(fps=60, period=2.6, n_periods=22, first_bite=0.8, rb=3.8, targets=None, gravity=900.0,
              substeps=4, iters=2, seed=7, init=None, implode_dur=0.55, log=print):
     """init = (x, y, vx_per_substep, vy_per_substep) of the single start ball (from a previous run)."""
@@ -144,7 +153,8 @@ def simulate(fps=60, period=2.6, n_periods=22, first_bite=0.8, rb=3.8, targets=N
                         ang_r = rng.uniform(0, 2 * math.pi, n_new)
                         rr = rad * np.sqrt(rng.uniform(0, 1, n_new))
                         newp = cen + np.stack([np.cos(ang_r) * rr, np.sin(ang_r) * rr], 1)
-                        spd = rng.uniform(100, 300 + 0.04 * n_new, n_new) * h
+                        boost = 1.8 if stage < 4 else 1.0          # punchier explosions at the start
+                        spd = rng.uniform(100 * boost, (300 + 0.04 * n_new) * boost, n_new) * h
                         newv = np.stack([np.cos(ang_r), np.sin(ang_r)], 1) * spd[:, None]
                         pos = np.concatenate([pos[keep], newp])
                         prev = np.concatenate([prev[keep], newp - newv])
