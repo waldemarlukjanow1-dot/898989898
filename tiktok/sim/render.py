@@ -77,6 +77,40 @@ def make_label():
 LABEL = make_label()
 
 
+# ---- optional style (set by the video script)
+RING = "white"            # "white" | "rainbow"
+BLADE = None              # None = metal wedge, or dict(colors=[(inner, outer), (inner, outer)])
+
+
+def hsv(h, s=1.0, v=1.0):
+    import colorsys
+    r, g, b = colorsys.hsv_to_rgb(h % 1.0, s, v)
+    return int(r * 255), int(g * 255), int(b * 255)
+
+
+def draw_ring_rainbow(d, t, pulse):
+    n = 180
+    for k in range(n):
+        a0, a1 = 360 * k / n, 360 * (k + 1) / n + 0.6
+        col = hsv(k / n + t * 0.04, 0.85, 1.0)
+        box = ((CX - R - 3) * SS, (CY - R - 3) * SS, (CX + R + 3) * SS, (CY + R + 3) * SS)
+        gbox = ((CX - R - 9) * SS, (CY - R - 9) * SS, (CX + R + 9) * SS, (CY + R + 9) * SS)
+        d.arc(gbox, a0, a1, fill=col + (int(50 + 110 * pulse),), width=int((14 + 10 * pulse) * SS))
+        d.arc(box, a0, a1, fill=col + (255,), width=int((4 + 2 * pulse) * SS))
+
+
+def draw_blade_leaf(d, ang, inner, outer):
+    """Leaf/spindle blade following blade_halfwidth (same shape as the physics), two-tone with a bright core."""
+    u = (math.cos(math.radians(ang)), math.sin(math.radians(ang)))
+    n = (-u[1], u[0])
+    ss = np.linspace(0, R - 1, 40)
+    hw = blade_halfwidth(ss)
+    for scale, col, a in ((1.7, outer, 60), (1.0, outer, 255), (0.45, inner, 255)):
+        left = [((CX + u[0] * s_ + n[0] * w * scale) * SS, (CY + u[1] * s_ + n[1] * w * scale) * SS) for s_, w in zip(ss, hw)]
+        right = [((CX + u[0] * s_ - n[0] * w * scale) * SS, (CY + u[1] * s_ - n[1] * w * scale) * SS) for s_, w in zip(ss, hw)]
+        d.polygon(left + right[::-1], fill=col + (a,))
+
+
 def fmt(n):
     return f"{n:,}".replace(",", ".")
 
@@ -113,9 +147,16 @@ def render_frame(fr, t, events, goal, rb):
     # ---- stage (ring, jaw, hub) drawn supersampled on top
     st = Image.new("RGBA", (W * SS, H * SS), (0, 0, 0, 0))
     sd = ImageDraw.Draw(st)
-    sd.ellipse(((CX - R) * SS, (CY - R) * SS, (CX + R) * SS, (CY + R) * SS), outline=(235, 235, 240, 230), width=3 * SS)
-    for ang in (fr["a1"], fr["a2"]):
-        draw_blade(sd, ang, LABEL)
+    if RING == "rainbow":
+        draw_ring_rainbow(sd, t, bloom)
+    else:
+        sd.ellipse(((CX - R) * SS, (CY - R) * SS, (CX + R) * SS, (CY + R) * SS), outline=(235, 235, 240, 230), width=3 * SS)
+    for k, ang in enumerate((fr["a1"], fr["a2"])):
+        if BLADE:
+            inner, outer = BLADE["colors"][k]
+            draw_blade_leaf(sd, ang, inner, outer)
+        else:
+            draw_blade(sd, ang, LABEL)
     sd = ImageDraw.Draw(st)
     sd.ellipse(((CX - 9) * SS, (CY - 9) * SS, (CX + 9) * SS, (CY + 9) * SS), fill=(10, 10, 12), outline=(200, 200, 205), width=2 * SS)
     st = st.resize((W, H), Image.LANCZOS)

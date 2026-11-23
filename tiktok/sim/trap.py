@@ -34,7 +34,11 @@ SLOW = 2.0                                   # half tempo: 162 -> 81 BPM (calmer
 SEG0 = FIRST_KICK - 1 * PER                  # 1 silent beat (2 at half tempo) before the first kick
 T_ORIG = 80 * PER                            # 20 original bars ...
 T = T_ORIG * SLOW                            # ... = 59.3 s at half tempo
-blade_halfwidth = beat.blade_halfwidth
+def blade_halfwidth(s):
+    """Leaf/spindle blade: thin at the hub, bulging in the middle (26 px), pointed tip at the rim."""
+    s = np.asarray(s)
+    x = np.clip((s - 0.06 * R) / (0.94 * R), 0, 1)
+    return 3.0 + 23.0 * np.sin(np.pi * x ** 0.8) ** 0.9
 
 
 def meetings():
@@ -198,7 +202,8 @@ def simulate(init=None, seed=3, substeps=6, iters=2, gravity=900.0, implode_dur=
                 pos = np.concatenate([pos[keep], newp])
                 prev = np.concatenate([prev[keep], newp - newv])
                 nb += 1
-                col = np.concatenate([col[keep], np.full(n_new, nb % len(render.PALETTE), np.int16)])
+                mix3 = (nb * 3 + rng.integers(0, 3, n_new)) % len(render.PALETTE)     # 3 colours per explosion
+                col = np.concatenate([col[keep], mix3.astype(np.int16)])
                 born = np.concatenate([born[keep], np.full(n_new, tm)])
                 events[-1].update(kind="bite", x=float(cen[0]), y=float(cen[1]), new=int(n_new),
                                   caught=int(len(caught)), total=int(len(pos)))
@@ -255,7 +260,10 @@ def make_audio(path):
 
 # ------------------------------------------------------------------ video
 render.blade_halfwidth = blade_halfwidth
-render.PALETTE = [(255, 43, 214), (120, 200, 255), (255, 200, 90), (160, 120, 255), (90, 255, 190), (255, 140, 170)]
+render.PALETTE = [render.hsv(0.88 + k * 0.083 * 5, 0.85, 1.0) for k in range(12)]   # 12 hues, big jumps
+render.PALETTE[0] = (255, 43, 214)                                                     # start ball stays magenta
+render.RING = "rainbow"
+render.BLADE = dict(colors=[((200, 255, 255), (0, 190, 255)), ((255, 230, 200), (255, 70, 140))])
 _RES = None
 
 
